@@ -1,0 +1,15 @@
+﻿Analyzing examdril...                                           
+
+   info - Instances of 'Color' should be created using an 8-digit hexadecimal integer (such as '0xFFFFFFFF') - lib\screens\dashboard_screen.dart:28:42 - use_full_hex_values_for_flutter_colors
+   info - Instances of 'Color' should be created using an 8-digit hexadecimal integer (such as '0xFFFFFFFF') - lib\screens\dashboard_screen.dart:32:42 - use_full_hex_values_for_flutter_colors
+   info - The private field _results could be 'final' - lib\screens\quiz_screen.dart:18:14 - prefer_final_fields
+warning - The declaration '_resetAnimations' isn't referenced - lib\screens\quiz_screen.dart:58:8 - unused_element
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:154:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:215:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:238:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:308:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:309:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\result_screen.dart:143:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\result_screen.dart:231:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\result_screen.dart:232:47 - deprecated_member_use
+
