@@ -112,21 +112,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildPersonalizedGames() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(30.w),   // scaled padding
+      height: 90.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
       decoration: BoxDecoration(
         color: const Color(0xFF4270B0),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/images/pill_icon.png', height: 36.h),
-          SizedBox(width: 15.w),
-          Text(
-            'Personalized games',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 30.sp,
-              fontWeight: FontWeight.w600,
+          Image.asset('assets/images/pill_icon.png', height: 32.h),
+          SizedBox(width: 12.w),
+          Flexible(
+            child: Text(
+              'Personalized games',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -158,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 child: Container(
-                  height: 162.h,
+                  height: 170.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16.r),
@@ -198,7 +203,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(width: 12.w),
             Expanded(
               child: Container(
-                height: 162.h,
+                height: 170.h,
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A1A1A),
                   borderRadius: BorderRadius.circular(16.r),
@@ -262,7 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Expanded(
               child: Container(
-                height: 162.h,
+                height: 170.h,
                 decoration: BoxDecoration(
                   color: const Color(0xFF454A87),
                   borderRadius: BorderRadius.circular(16.r),
@@ -294,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(width: 12.w),
             Expanded(
               child: Container(
-                height: 162.h,
+                height: 170.h,
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A0A2E),
                   borderRadius: BorderRadius.circular(16.r),

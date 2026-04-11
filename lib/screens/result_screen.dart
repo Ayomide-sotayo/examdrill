@@ -242,14 +242,16 @@ class _ResultScreenState extends State<ResultScreen>
                       size: 16.sp,
                     ),
                     SizedBox(width: 6.w),
-                    Text(
-                      'Answer: $correctAnswer',
-                      style: TextStyle(
-                        color: userGotIt
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFFFF5252),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Text(
+                        'Answer: $correctAnswer',
+                        style: TextStyle(
+                          color: userGotIt
+                              ? const Color(0xFF4CAF50)
+                              : const Color(0xFFFF5252),
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
