@@ -12,7 +12,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,10 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 5.h),
             Text(
               'Daily streak',
-              style: TextStyle(
-                color: const Color(0xFF68727D),
-                fontSize: 12.sp,
-              ),
+              style: TextStyle(color: const Color(0xFF68727D), fontSize: 12.sp),
             ),
           ],
         ),
@@ -124,13 +120,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Image.asset('assets/images/pill_icon.png', height: 32.h),
           SizedBox(width: 12.w),
           Flexible(
-            child: Text(
-              'Personalized games',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w600,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'Personalized games',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -255,10 +254,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             Text(
               'view all',
-              style: TextStyle(
-                color: Colors.blue[300],
-                fontSize: 13.sp,
-              ),
+              style: TextStyle(color: Colors.blue[300], fontSize: 13.sp),
             ),
           ],
         ),

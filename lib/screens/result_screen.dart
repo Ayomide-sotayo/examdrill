@@ -86,8 +86,11 @@ class _ResultScreenState extends State<ResultScreen>
           child: Image.asset(
             'assets/images/congrats.png',
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) =>
-                 Icon(Icons.emoji_events_rounded, color: Colors.amber, size: 32.sp),
+            errorBuilder: (_, __, ___) => Icon(
+              Icons.emoji_events_rounded,
+              color: Colors.amber,
+              size: 32.sp,
+            ),
           ),
         ),
         SizedBox(width: 16.w),
@@ -156,7 +159,9 @@ class _ResultScreenState extends State<ResultScreen>
                   width: 180.w,
                   height: 180.h,
                   child: CircularProgressIndicator(
-                    value: _progressAnimation.value * (_getCorrectCount() / widget.results.length),
+                    value:
+                        _progressAnimation.value *
+                        (_getCorrectCount() / widget.results.length),
                     strokeWidth: 16.w,
                     strokeCap: StrokeCap.round,
                     backgroundColor: Colors.transparent,
@@ -179,10 +184,7 @@ class _ResultScreenState extends State<ResultScreen>
                     ),
                     Text(
                       '${_getCorrectCount()}/${widget.results.length} correct',
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 12.sp,
-                      ),
+                      style: TextStyle(color: Colors.white54, fontSize: 12.sp),
                     ),
                   ],
                 ),
@@ -210,14 +212,16 @@ class _ResultScreenState extends State<ResultScreen>
         ...List.generate(quizQuestions.length, (i) {
           final question = quizQuestions[i];
           final correctAnswer = question.options[question.correctIndex];
-          final userGotIt = i < widget.results.length ? widget.results[i] : false;
+          final userGotIt = i < widget.results.length
+              ? widget.results[i]
+              : false;
           return Container(
             margin: EdgeInsets.only(bottom: 12.h),
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: const Color(0xFF1A1A2E),
               borderRadius: BorderRadius.circular(12.r),
-              
+
               border: Border.all(
                 color: userGotIt
                     ? const Color(0xFFFFFFFF)
@@ -233,6 +237,7 @@ class _ResultScreenState extends State<ResultScreen>
                 ),
                 SizedBox(height: 8.h),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, // 👈 add this
                   children: [
                     Icon(
                       userGotIt ? Icons.check_circle : Icons.cancel,
@@ -245,6 +250,8 @@ class _ResultScreenState extends State<ResultScreen>
                     Expanded(
                       child: Text(
                         'Answer: $correctAnswer',
+                        softWrap: true, // 👈 add this
+                        overflow: TextOverflow.visible, // 👈 add this
                         style: TextStyle(
                           color: userGotIt
                               ? const Color(0xFF4CAF50)
@@ -274,7 +281,9 @@ class _ResultScreenState extends State<ResultScreen>
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => const ThemeSelectionScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const ThemeSelectionScreen(),
+                  ),
                   (route) => false,
                 );
               },

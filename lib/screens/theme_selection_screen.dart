@@ -25,7 +25,8 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A1A),
-      body: SafeArea(   // I kept SafeArea here because this screen has its own top bar
+      body: SafeArea(
+        // I kept SafeArea here because this screen has its own top bar
         child: Column(
           children: [
             _buildTopBar(),
@@ -67,9 +68,17 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
           ),
           Row(
             children: [
-              Icon(Icons.help_outline_rounded, color: Colors.white70, size: 22.sp),
+              Icon(
+                Icons.help_outline_rounded,
+                color: Colors.white70,
+                size: 22.sp,
+              ),
               SizedBox(width: 16.w),
-              Icon(Icons.favorite_border_rounded, color: Colors.white70, size: 22.sp),
+              Icon(
+                Icons.favorite_border_rounded,
+                color: Colors.white70,
+                size: 22.sp,
+              ),
               SizedBox(width: 16.w),
               GestureDetector(
                 onTap: () => setState(() => _isSoundEnabled = !_isSoundEnabled),
@@ -100,10 +109,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(19.r),
-              child: Image.asset(
-                'assets/images/mascot.png',
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset('assets/images/mascot.png', fit: BoxFit.cover),
             ),
           ),
           SizedBox(height: 10.h),
@@ -119,6 +125,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
       ),
     );
   }
+
   Widget _buildStatsRow() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
@@ -127,7 +134,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.white),
       ),
-      height: 86.h,
+      height: 88.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -144,7 +151,11 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(color: Colors.white, fontSize: 13.sp , fontWeight: FontWeight.w100),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w100,
+          ),
         ),
         SizedBox(height: 4.h),
         Text(
@@ -180,7 +191,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
                 onTap: () => setState(() => _selectedTheme = index),
                 child: Container(
                   margin: EdgeInsets.only(
-                    right: (index < _themes.length - 1) ? 28.w : 28.w,
+                    right: (index < _themes.length - 1) ? 24.w : 24.w,
                   ),
                   height: 130.h,
                   decoration: BoxDecoration(
@@ -193,7 +204,9 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
                     ),
                     color: _themes[index] == null
                         ? Colors.white
-                        : const Color(0xFF25254B), // Slightly lighter than background for definition
+                        : const Color(
+                            0xFF25254B,
+                          ), // Slightly lighter than background for definition
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6.5.r),
