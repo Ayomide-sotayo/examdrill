@@ -1,3 +1,4 @@
+import 'package:examdril/screens/patient_chart_info_screen.dart';
 import 'package:examdril/screens/theme_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,13 +28,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 24.h),
             _buildPersonalizedGames(),
             SizedBox(height: 16.h),
-            Divider(color: const Color(0xFF24292F1A), thickness: 1.h),
+            Divider(color: const Color(0x1A24292F), thickness: 1.h),
             SizedBox(height: 10.h),
             _buildRecommendedSection(),
             SizedBox(height: 16.h),
-            Divider(color: const Color(0xFF24292F1A), thickness: 1.h),
+            Divider(color: const Color(0x1A24292F), thickness: 1.h),
             SizedBox(height: 10.h),
             _buildGamesSection(),
+            SizedBox(height: 16.h),
+            Divider(color: const Color(0x1A24292F), thickness: 1.h),
+            SizedBox(height: 10.h),
+            _buildPatientChartSection(),
+            SizedBox(height: 60.h),
           ],
         ),
       ),
@@ -216,8 +222,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     Positioned(
-                      bottom: 10.h,
-                      left: 43.w,
+                      bottom: 12.h,
+                      left: 37.w,
                       child: Text(
                         'Practice Drill',
                         style: TextStyle(
@@ -277,8 +283,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     Positioned(
-                      bottom: 10.h,
-                      left: 43.w,
+                      bottom: 12.h,
+                      left: 37.w,
                       child: Text(
                         'Recall Dash',
                         style: TextStyle(
@@ -330,6 +336,108 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPatientChartSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Clinical Tools',
+          style: TextStyle(
+            color: const Color(0xFF25292F),
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const PatientChartInfoScreen(),
+              ),
+            );
+          },
+          child: Container(
+            height: 120.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF0F9B8E), Color(0xFF0A635B)], 
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF0F9B8E).withValues(alpha: 0.3),
+                  blurRadius: 10.r,
+                  offset: const Offset(0, 4),
+                )
+              ],
+            ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  right: -10.w,
+                  bottom: -15.h,
+                  child: Icon(
+                    Icons.medical_information,
+                    size: 90.sp,
+                    color: Colors.white.withValues(alpha: 0.15),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8.r),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Icon(
+                              Icons.monitor_heart_outlined, 
+                              color: Colors.white, 
+                              size: 24.sp,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            'Patient Chart',
+                            style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Review case files & clinical data',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

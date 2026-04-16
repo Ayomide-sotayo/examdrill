@@ -32,6 +32,14 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'ExamDril',
           debugShowCheckedModeBanner: false,
+          builder: (context, widget) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: const TextScaler.linear(1.0),
+              ),
+              child: widget!,
+            );
+          },
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF164863),

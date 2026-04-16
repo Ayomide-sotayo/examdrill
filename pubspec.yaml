@@ -39,6 +39,8 @@ dependencies:
   google_fonts: ^8.0.2
   flutter_svg: ^2.0.10+1
   flutter_screenutil: ^5.9.0
+  flutter_tts: ^4.2.5
+  video_player: ^2.10.1
 
 dev_dependencies:
   flutter_test:
@@ -73,7 +75,18 @@ flutter:
     - assets/images/theme_3.png
     - assets/images/theme_4.png
     - assets/images/congrats.png
+    - assets/images/benefit.png
+    - assets/images/bunny.png
+    - assets/images/charles.png
+    - assets/images/zack.png
+    - assets/images/william.png
+    - assets/images/xp.png
+    - assets/images/sam.png
+    - assets/images/score.png
+    - assets/images/wave.mp4
+    - assets/images/patient_chart_avatar.png
     - assets/images/transition_bg.png
+
     # Audio
     - assets/audio/correct_sound_2.mp3
     - assets/audio/good_background_sound.mp3

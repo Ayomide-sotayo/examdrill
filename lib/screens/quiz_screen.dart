@@ -598,9 +598,9 @@ class _QuizScreenState extends State<QuizScreen> {
         textAlign: TextAlign.center,
         style: TextStyle(
           color: _baseTextColor,
-          fontSize: 22.sp,
+          fontSize: 21.sp,
           fontWeight: FontWeight.bold,
-          height: 1.6,
+          height: 1.3,
         ),
       ),
     );
