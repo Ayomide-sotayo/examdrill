@@ -1,6 +1,5 @@
 import 'package:examdril/screens/question_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
@@ -13,22 +12,6 @@ class PatientChartAudioScreen extends StatefulWidget {
 }
 
 class _PatientChartAudioScreenState extends State<PatientChartAudioScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Hide status bar and bottom navigation bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  }
-
-  @override
-  void dispose() {
-    // Restore system UI when exiting the game completely
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: SystemUiOverlay.values,
-    );
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

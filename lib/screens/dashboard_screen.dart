@@ -1,4 +1,6 @@
+import 'package:examdril/screens/best_next_step/bns_pregame_screen.dart';
 import 'package:examdril/screens/patient_chart_info_screen.dart';
+import 'package:examdril/screens/practice_drill/pregame_screen.dart';
 import 'package:examdril/screens/theme_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -207,20 +209,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             SizedBox(width: 12.w),
             Expanded(
-              child: Container(
-                height: 170.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        'assets/images/lightbulb.png',
-                        height: 60.h,
-                      ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PreGameScreen(),
                     ),
+                  );
+                },
+                child: Container(
+                  height: 170.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          'assets/images/lightbulb.png',
+                          height: 60.h,
+                        ),
+                      ),
                     Positioned(
                       bottom: 12.h,
                       left: 37.w,
@@ -236,6 +247,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
+            ),
             ),
           ],
         ),
@@ -354,90 +366,158 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         SizedBox(height: 12.h),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const PatientChartInfoScreen(),
-              ),
-            );
-          },
-          child: Container(
-            height: 120.h,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF0F9B8E), Color(0xFF0A635B)], 
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0F9B8E).withValues(alpha: 0.3),
-                  blurRadius: 10.r,
-                  offset: const Offset(0, 4),
-                )
-              ],
-            ),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  right: -10.w,
-                  bottom: -15.h,
-                  child: Icon(
-                    Icons.medical_information,
-                    size: 90.sp,
-                    color: Colors.white.withValues(alpha: 0.15),
+        Row(
+          children: [
+            // ── Patient Chart ──────────────────────────
+            Expanded(
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PatientChartInfoScreen(),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8.r),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            child: Icon(
-                              Icons.monitor_heart_outlined, 
-                              color: Colors.white, 
-                              size: 24.sp,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Text(
-                            'Patient Chart',
-                            style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                child: Container(
+                  height: 130.h,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0F9B8E), Color(0xFF0A635B)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF0F9B8E).withValues(alpha: 0.3),
+                        blurRadius: 10.r,
+                        offset: const Offset(0, 4),
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Review case files & clinical data',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 14.sp,
+                    ],
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        right: -8.w,
+                        bottom: -10.h,
+                        child: Icon(
+                          Icons.medical_information,
+                          size: 70.sp,
+                          color: Colors.white.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(14.r),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(6.r),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Icon(
+                                Icons.monitor_heart_outlined,
+                                color: Colors.white,
+                                size: 18.sp,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              'Patient\nChart',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(width: 12.w),
+            // ── Best Next Step ─────────────────────────
+            Expanded(
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const BnsPreGameScreen(),
+                  ),
+                ),
+                child: Container(
+                  height: 130.h,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF4A7FA5), Color(0xFF2C5F7A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF4A7FA5).withValues(alpha: 0.3),
+                        blurRadius: 10.r,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        right: -8.w,
+                        bottom: -10.h,
+                        child: Icon(
+                          Icons.directions_walk_rounded,
+                          size: 70.sp,
+                          color: Colors.white.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(14.r),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(6.r),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Icon(
+                                Icons.swap_vert_circle_outlined,
+                                color: Colors.white,
+                                size: 18.sp,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              'Best Next\nStep',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

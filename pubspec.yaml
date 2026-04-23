@@ -86,6 +86,10 @@ flutter:
     - assets/images/wave.mp4
     - assets/images/patient_chart_avatar.png
     - assets/images/transition_bg.png
+    - assets/images/bulb.png
+    - assets/images/blue.png
+    - assets/images/green.png
+    - assets/images/feet.png
 
     # Audio
     - assets/audio/correct_sound_2.mp3
