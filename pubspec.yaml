@@ -90,6 +90,8 @@ flutter:
     - assets/images/blue.png
     - assets/images/green.png
     - assets/images/feet.png
+    - assets/images/signinmascot.png
+    - assets/images/guestmascots.png
 
     # Audio
     - assets/audio/correct_sound_2.mp3

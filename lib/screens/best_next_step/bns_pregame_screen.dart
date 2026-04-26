@@ -1,5 +1,6 @@
 import 'package:examdril/screens/best_next_step/bns_game_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ─────────────────────────────────────────────
@@ -53,6 +54,20 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
   int _selectedTheme = -1;
 
   bool get _themeChosen => _selectedTheme != -1;
+
+  @override
+  void initState() {
+    super.initState();
+    // Enable immersive mode when entering pre-game/game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    // Reset to edge-to-edge when leaving the game flow (popping back to dashboard)
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

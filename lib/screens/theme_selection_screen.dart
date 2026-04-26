@@ -1,5 +1,6 @@
 import 'package:examdril/screens/quiz_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'dart:math';
@@ -20,6 +21,20 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
     'assets/images/theme_3.png',
     'assets/images/theme_4.png',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Enable immersive mode when entering pre-game/game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    // Reset to edge-to-edge when leaving the game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

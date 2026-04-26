@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'patient_chart_audio_screen.dart';
 
-class PatientChartInfoScreen extends StatelessWidget {
+class PatientChartInfoScreen extends StatefulWidget {
   const PatientChartInfoScreen({super.key});
+
+  @override
+  State<PatientChartInfoScreen> createState() => _PatientChartInfoScreenState();
+}
+
+class _PatientChartInfoScreenState extends State<PatientChartInfoScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Enable immersive mode when entering pre-game/game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    // Reset to edge-to-edge when leaving the game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

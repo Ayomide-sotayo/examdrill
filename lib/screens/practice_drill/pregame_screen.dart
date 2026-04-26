@@ -1,6 +1,7 @@
 
 import 'package:examdril/screens/practice_drill/practice_drill_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PreGameScreen extends StatefulWidget {
@@ -11,6 +12,20 @@ class PreGameScreen extends StatefulWidget {
 }
 
 class _PreGameScreenState extends State<PreGameScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Enable immersive mode when entering pre-game/game flow
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    // Reset to edge-to-edge when leaving the game flow (popping back to dashboard)
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

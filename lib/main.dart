@@ -1,3 +1,4 @@
+import 'package:examdril/screens/authentication/signIn_screen.dart';
 import 'package:examdril/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +9,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Full screen mode - hides status bar and navigation bar properly for quiz/game feel
   await SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.immersiveSticky,
+    SystemUiMode.edgeToEdge,
   );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
     ),
   );
 
@@ -62,7 +64,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const DashboardScreen(),
+          home: const SignInScreen(),
         );
       },
     );
