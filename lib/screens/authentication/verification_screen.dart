@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'paywall_screen.dart';
+import 'courses_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String email;
@@ -14,11 +15,16 @@ class VerificationScreen extends StatefulWidget {
 class _VerificationScreenState extends State<VerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
+  int _resendTimerSeconds = 0;
+  Timer? _resendTimer;
 
   @override
   void initState() {
     super.initState();
     _otpController.addListener(_onOtpChanged);
+    _otpFocusNode.addListener(() {
+      setState(() {});
+    });
     // Auto-focus the field when the screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _otpFocusNode.requestFocus();
@@ -29,16 +35,33 @@ class _VerificationScreenState extends State<VerificationScreen> {
   void dispose() {
     _otpController.dispose();
     _otpFocusNode.dispose();
+    _resendTimer?.cancel();
     super.dispose();
+  }
+
+  void _startResendTimer() {
+    setState(() {
+      _resendTimerSeconds = 20;
+    });
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendTimerSeconds > 0) {
+        setState(() {
+          _resendTimerSeconds--;
+        });
+      } else {
+        _resendTimer?.cancel();
+      }
+    });
   }
 
   void _onOtpChanged() {
     setState(() {}); // Trigger rebuild to show the typed numbers
     if (_otpController.text.length == 6) {
-      // Navigate to paywall when 6 digits are entered
+      // Navigate to courses screen when 6 digits are entered
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const PaywallScreen()),
+        MaterialPageRoute(builder: (context) => const CoursesScreen()),
       );
     }
   }
@@ -143,9 +166,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(32.r),
                             border: Border.all(
-                              color: _otpController.text.isEmpty 
+                              color: _otpFocusNode.hasFocus
                                   ? const Color(0xFF469EFF) 
-                                  : Colors.white, // Changes to white when code is inputed
+                                  : Colors.white, // Only show blue ring when focused
                               width: 1.5,
                             ),
                             boxShadow: _otpController.text.isNotEmpty
@@ -198,13 +221,18 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // Resend logic
-                      },
+                      onTap: _resendTimerSeconds == 0 
+                          ? () {
+                              _startResendTimer();
+                              // Actual resend logic goes here
+                            }
+                          : null,
                       child: Text(
-                        'Resend',
+                        _resendTimerSeconds > 0 ? 'Resend in ${_resendTimerSeconds}s' : 'Resend',
                         style: GoogleFonts.roboto(
-                          color: const Color(0xFF469EFF),
+                          color: _resendTimerSeconds > 0 
+                              ? const Color(0xFFC4C4C4) // Faded text when disabled
+                              : const Color(0xFF469EFF),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                         ),

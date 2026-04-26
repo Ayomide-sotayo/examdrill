@@ -2,7 +2,7 @@ import 'package:examdril/data/question_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'theme_selection_screen.dart';
-import 'dashboard_screen.dart';
+import '../dashboard_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final List<bool> results;

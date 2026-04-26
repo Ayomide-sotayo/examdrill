@@ -39,6 +39,7 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
   bool _hasAnswered = false;
   bool _showCorrection = false;
   bool _showFullImage = false;
+  bool _isPaused = false;
   int _score = 0;
   int _lives = 4;
   final List<bool> _results = [];
@@ -272,6 +273,35 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
   }
 
   // ─────────────────────────────────────────
+  //  PAUSE & GAME FLOW
+  // ─────────────────────────────────────────
+  void _togglePause() {
+    setState(() => _isPaused = !_isPaused);
+    if (_isPaused) {
+      _bgPlayer.pause();
+      if (_pulseController.isAnimating) _pulseController.stop();
+    } else {
+      _bgPlayer.play();
+      if (!_hasAnswered && !_pulseController.isAnimating) {
+        _pulseController.repeat(reverse: true);
+      }
+    }
+  }
+
+  void _restartGame() {
+    _bgPlayer.stop();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const PracticeDrillScreen()),
+    );
+  }
+
+  void _quitGame() {
+    _bgPlayer.stop();
+    Navigator.pop(context);
+  }
+
+  // ─────────────────────────────────────────
   //  HELPERS
   // ─────────────────────────────────────────
   bool _hasTopContent(PracticeDrillQuestion q) => q.type != QuestionType.text;
@@ -349,6 +379,9 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
           // ── correction overlay ─────────────
           if (_showCorrection)
             _buildCorrectionScreen(practiceDrillQuestions[_currentQuestion]),
+
+          // ── pause overlay ──────────────────
+          _buildPauseOverlay(),
         ],
       ),
     );
@@ -366,10 +399,13 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
           // score
           Row(
             children: [
-              Icon(
-                Icons.pause,
-                color: _kWhiteText.withOpacity(0.7),
-                size: 18.sp,
+              GestureDetector(
+                onTap: _togglePause,
+                child: Icon(
+                  Icons.pause,
+                  color: _kWhiteText.withOpacity(0.7),
+                  size: 18.sp,
+                ),
               ),
               SizedBox(width: 6.w),
               Text(
@@ -743,6 +779,77 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
           ),
         );
       }),
+    );
+  }
+
+  // ─────────────────────────────────────────
+  //  PAUSE OVERLAY
+  // ─────────────────────────────────────────
+  Widget _buildPauseOverlay() {
+    if (!_isPaused) return const SizedBox.shrink();
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 47.8, sigmaY: 47.8),
+            child: Container(
+              color: const Color(0x33000000),
+            ),
+          ),
+        ),
+        SafeArea(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Paused',
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 50.h),
+                  _buildPauseButton('Resume', _togglePause),
+                  SizedBox(height: 16.h),
+                  _buildPauseButton('Restart', _restartGame),
+                  SizedBox(height: 16.h),
+                  _buildPauseButton('Quit', _quitGame),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPauseButton(String text, VoidCallback onTap) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56.h,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+          elevation: 0,
+        ),
+        onPressed: onTap,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 

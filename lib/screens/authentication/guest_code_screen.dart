@@ -18,6 +18,9 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
   void initState() {
     super.initState();
     _codeController.addListener(_onCodeChanged);
+    _codeFocusNode.addListener(() {
+      setState(() {});
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _codeFocusNode.requestFocus();
     });
@@ -142,7 +145,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(32.r),
                             border: Border.all(
-                              color: _codeController.text.isEmpty 
+                              color: _codeFocusNode.hasFocus
                                   ? const Color(0xFF469EFF) 
                                   : Colors.white,
                               width: 1.5,

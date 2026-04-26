@@ -1,7 +1,7 @@
 import 'package:examdril/screens/best_next_step/bns_pregame_screen.dart';
-import 'package:examdril/screens/patient_chart_info_screen.dart';
+import 'package:examdril/screens/patientchart/patient_chart_info_screen.dart';
 import 'package:examdril/screens/practice_drill/pregame_screen.dart';
-import 'package:examdril/screens/theme_selection_screen.dart';
+import 'package:examdril/screens/examdrill/theme_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';

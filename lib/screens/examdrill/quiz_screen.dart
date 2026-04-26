@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
-import '../models/question_model.dart';
+import '../../models/question_model.dart';
 import 'result_screen.dart';
 
 class QuizScreen extends StatefulWidget {

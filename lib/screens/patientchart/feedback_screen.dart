@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../data/patients_data.dart';
+import '../../data/patients_data.dart';
 
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});

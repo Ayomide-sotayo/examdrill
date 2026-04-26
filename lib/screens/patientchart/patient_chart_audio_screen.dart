@@ -1,4 +1,4 @@
-import 'package:examdril/screens/question_screen.dart';
+import 'package:examdril/screens/patientchart/question_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

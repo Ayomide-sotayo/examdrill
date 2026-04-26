@@ -12,6 +12,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
   bool _isButtonEnabled = false;
   String? _errorText;
 
@@ -19,11 +20,15 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     super.initState();
     _emailController.addListener(_validateEmail);
+    _emailFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _emailController.dispose();
+    _emailFocusNode.dispose();
     super.dispose();
   }
 
@@ -88,13 +93,18 @@ class _SignInScreenState extends State<SignInScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30.r),
                     border: Border.all(
-                      color: _errorText != null ? Colors.red : Colors.transparent,
-                      width: 1,
+                      color: _errorText != null 
+                          ? Colors.red 
+                          : (_emailFocusNode.hasFocus 
+                              ? const Color(0xFF469EFF) 
+                              : Colors.transparent),
+                      width: 1.5, // slightly thicker for the focus ring
                     ),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: TextField(
                     controller: _emailController,
+                    focusNode: _emailFocusNode,
                     keyboardType: TextInputType.emailAddress,
                     style: GoogleFonts.roboto(
                       fontSize: 16.sp,

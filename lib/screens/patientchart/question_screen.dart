@@ -1,12 +1,13 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
-import '../models/patient_model.dart';
-import '../data/patients_data.dart';
+import '../../models/patient_model.dart';
+import '../../data/patients_data.dart';
 import 'result_screen_patient.dart';
+import 'patient_chart_instructions_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({super.key});
@@ -1211,7 +1212,12 @@ class _QuestionScreenState extends State<QuestionScreen>
                 child: Center(
                   child: GestureDetector(
                     onTap: () {
-                      // Placeholder for instructions
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PatientChartInstructionsScreen(),
+                        ),
+                      );
                     },
                     child: Text(
                       'Game Instructions',

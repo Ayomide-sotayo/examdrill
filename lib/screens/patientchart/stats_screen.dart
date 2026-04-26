@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../data/patients_data.dart';
+import '../../data/patients_data.dart';
 
 class StatsScreen extends StatelessWidget {
   final int score;

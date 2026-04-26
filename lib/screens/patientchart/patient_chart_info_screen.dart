@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'patient_chart_audio_screen.dart';
+import 'patient_chart_instructions_screen.dart';
 
 class PatientChartInfoScreen extends StatefulWidget {
   const PatientChartInfoScreen({super.key});
@@ -75,7 +76,17 @@ class _PatientChartInfoScreenState extends State<PatientChartInfoScreen> {
           ),
           Row(
             children: [
-              Icon(Icons.help_outline_rounded, color: Colors.white70, size: 22.sp),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PatientChartInstructionsScreen(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.help_outline_rounded, color: Colors.white70, size: 22.sp),
+              ),
               SizedBox(width: 16.w),
               Icon(
                 Icons.favorite_border_rounded,

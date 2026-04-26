@@ -92,6 +92,10 @@ flutter:
     - assets/images/feet.png
     - assets/images/signinmascot.png
     - assets/images/guestmascots.png
+    - assets/images/osce.png
+    - assets/images/naplex.png
+    - assets/images/pebc.png
+    - assets/images/hand.png
 
     # Audio
     - assets/audio/correct_sound_2.mp3
