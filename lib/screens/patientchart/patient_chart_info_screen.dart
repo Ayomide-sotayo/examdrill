@@ -139,7 +139,7 @@ class _PatientChartInfoScreenState extends State<PatientChartInfoScreen> {
   Widget _buildStatsRow() {
     return Container(
       width: 342.w,
-      height: 87.h,
+      height: 92.h,
       decoration: BoxDecoration(
         color: const Color(0xFF675B73),
         borderRadius: BorderRadius.circular(16.r),

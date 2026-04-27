@@ -2,8 +2,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/patients_data.dart';
+import 'feedback_screen.dart';
 
-class StatsScreen extends StatelessWidget {
+class StatsScreen extends StatefulWidget {
   final int score;
   final int correctAnswers;
   final int totalQuestions;
@@ -14,6 +15,26 @@ class StatsScreen extends StatelessWidget {
     required this.correctAnswers,
     required this.totalQuestions,
   });
+
+  @override
+  State<StatsScreen> createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends State<StatsScreen> {
+  bool _showFeedbackConfirmation = false;
+  bool _feedbackWasPositive = false;
+
+  void _onFeedbackTap(bool isPositive) {
+    setState(() {
+      _feedbackWasPositive = isPositive;
+      _showFeedbackConfirmation = true;
+    });
+    Future.delayed(const Duration(milliseconds: 4500), () {
+      if (mounted) {
+        setState(() => _showFeedbackConfirmation = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,38 +53,76 @@ class StatsScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              // Top Bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+              Column(
+                children: [
+                  // Top Bar
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon:
+                              const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
-                  child: Column(
-                    children: [
-                      _buildTopCard(),
-                      SizedBox(height: 12.h),
-                      _buildProficiencyCard(),
-                      SizedBox(height: 12.h),
-                      _buildDifficultyCard(),
-                      SizedBox(height: 12.h),
-                      _buildAccuracyCard(),
-                      SizedBox(height: 12.h),
-                      _buildContentReportCard(),
-                      SizedBox(height: 12.h),
-                      _buildFeedbackCard(),
-                    ],
                   ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 140.h),
+                      child: Column(
+                        children: [
+                          _buildTopCard(),
+                          SizedBox(height: 12.h),
+                          _buildProficiencyCard(),
+                          SizedBox(height: 12.h),
+                          _buildDifficultyCard(),
+                          SizedBox(height: 12.h),
+                          _buildAccuracyCard(),
+                          SizedBox(height: 12.h),
+                          _buildContentReportCard(),
+                          SizedBox(height: 12.h),
+                          _buildFeedbackCard(),
+                          
+                          // Inline Feedback Confirmation
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 400),
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SizeTransition(
+                                  sizeFactor: animation,
+                                  axisAlignment: -1,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: _showFeedbackConfirmation
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 12.h),
+                                    child: _buildFeedbackConfirmation(),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Sticky Action Buttons
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 24.h),
+                  color: Colors.transparent, 
+                  child: _buildBottomButtons(context),
                 ),
               ),
             ],
@@ -138,7 +197,7 @@ class StatsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'HIGH SCORE: $score',
+                      'HIGH SCORE: ${widget.score}',
                       style: _labelStyle,
                     ),
                   ],
@@ -151,7 +210,7 @@ class StatsScreen extends StatelessWidget {
             height: 60.h,
             width: double.infinity,
             child: CustomPaint(
-              painter: LineChartPainter(score: score),
+              painter: LineChartPainter(score: widget.score),
             ),
           ),
         ],
@@ -301,7 +360,7 @@ class StatsScreen extends StatelessWidget {
 
   Widget _buildAccuracyCard() {
     final accuracyPercent =
-        (correctAnswers / math.max(1, totalQuestions) * 100).round();
+        (widget.correctAnswers / math.max(1, widget.totalQuestions) * 100).round();
     return _buildCard(
       child: Column(
         children: [
@@ -325,14 +384,14 @@ class StatsScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(totalQuestions, (i) {
+            children: List.generate(widget.totalQuestions, (i) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 4.w),
                 width: 8.w,
                 height: 8.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: i < correctAnswers
+                  color: i < widget.correctAnswers
                       ? const Color(0xFF54CA6E)
                       : const Color(0xFFCF594A),
                 ),
@@ -355,7 +414,7 @@ class StatsScreen extends StatelessWidget {
           SizedBox(height: 20.h),
           // We map over patientQuestions. 
           ...List.generate(patientQuestions.length, (index) {
-            final isCorrect = index < correctAnswers;
+            final isCorrect = index < widget.correctAnswers;
             final q = patientQuestions[index];
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,7 +457,12 @@ class StatsScreen extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FeedbackScreen()),
+                );
+              },
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Colors.white, width: 1),
                 shape: RoundedRectangleBorder(
@@ -431,7 +495,7 @@ class StatsScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => _onFeedbackTap(false),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.white, width: 1),
                     shape: RoundedRectangleBorder(
@@ -451,7 +515,7 @@ class StatsScreen extends StatelessWidget {
               SizedBox(width: 16.w),
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => _onFeedbackTap(true),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.white, width: 1),
                     shape: RoundedRectangleBorder(
@@ -469,6 +533,111 @@ class StatsScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF261D2C),
+              minimumSize: Size(double.infinity, 56.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+            child: Text(
+              'Done',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 16.w),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {
+              // Restarting logic: go back to QuestionScreen or InfoScreen
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Back to Info/Audio screen
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF261D2C),
+              minimumSize: Size(double.infinity, 56.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+            child: Text(
+              'Play Again',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeedbackConfirmation() {
+    return Container(
+      key: const ValueKey('feedback_conf'),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFF554A62), // Matches cards
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            _feedbackWasPositive ? 'Awesome!' : 'Thanks for the feedback!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            _feedbackWasPositive
+                ? 'Workouts will adjust based on your feedback'
+                : 'We will work on making it better',
+              textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.9), fontSize: 14.sp),
+          ),
+          SizedBox(height: 20.h),
+          Image.asset(
+            'assets/images/check.png',
+            width: 64.w,
+            color: Colors.white,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.check_circle, color: Colors.white, size: 48.sp),
           ),
         ],
       ),

@@ -488,7 +488,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   Widget _buildScenarioText(String scenario) {
     return Container(
       width: 358.w,
-      height: 183.h,
+      height: 170.h,
       padding: EdgeInsets.only(top: 12.6.h, right: 12.2.w, left: 12.2.w),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.r)),
       child: SingleChildScrollView(
@@ -542,7 +542,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     return Container(
       key: _panelKey,
       width: 358.w,
-      height: 448.h,
+      height: 430.h,
       decoration: BoxDecoration(
         color: widget.theme.cardAreaColor,
         borderRadius: BorderRadius.circular(10.r),
@@ -565,10 +565,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
                   left: pos0.dx + 40.w,
                   top: pos0.dy + 80.h + _hintAnimation.value,
                   child: IgnorePointer(
-                    child: Image.asset(
-                      'assets/images/hand.png',
-                      width: 48.w,
-                    ),
+                    child: Image.asset('assets/images/hand.png', width: 48.w),
                   ),
                 );
               },
@@ -650,7 +647,10 @@ class _BnsGameScreenState extends State<BnsGameScreen>
           );
 
           // Animate card 0 moving slightly with the hand
-          if (_showHandHint && !_isPaused && currentSlot == 0 && _phase == _Phase.playing) {
+          if (_showHandHint &&
+              !_isPaused &&
+              currentSlot == 0 &&
+              _phase == _Phase.playing) {
             return AnimatedBuilder(
               animation: _hintAnimation,
               builder: (ctx, child) {
@@ -762,17 +762,17 @@ class _BnsGameScreenState extends State<BnsGameScreen>
                 return Positioned(
                   left: panelOffset.dx + pos0.dx + 40.w,
                   top: panelOffset.dy + pos0.dy + 80.h + _hintAnimation.value,
-                  child: Image.asset(
-                    'assets/images/hand.png',
-                    width: 48.w,
-                  ),
+                  child: Image.asset('assets/images/hand.png', width: 48.w),
                 );
               },
             ),
 
             // Hint Text
             Positioned(
-              top: panelOffset.dy + 448.h + 30.h, // A little below the options panel
+              top:
+                  panelOffset.dy +
+                  448.h +
+                  30.h, // A little below the options panel
               left: 0,
               right: 0,
               child: Text(

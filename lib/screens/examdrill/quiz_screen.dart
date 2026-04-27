@@ -23,6 +23,7 @@ class _QuizScreenState extends State<QuizScreen> {
   final List<bool> _results = [];
   bool _isAnimating = false;
   bool _showFullImage = false;
+  bool _isPaused = false;
 
   // Timer
   static const int _questionDuration = 20;
@@ -76,7 +77,7 @@ class _QuizScreenState extends State<QuizScreen> {
     _cancelTimer();
     setState(() => _secondsLeft = _questionDuration);
     _questionTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_isAnimating) return;
+      if (_isAnimating || _isPaused) return;
       if (_secondsLeft <= 1) {
         _cancelTimer();
         _onTimeExpired();
@@ -260,6 +261,45 @@ class _QuizScreenState extends State<QuizScreen> {
     super.dispose();
   }
 
+  void _togglePause() {
+    if (_isAnimating) return;
+    setState(() {
+      _isPaused = !_isPaused;
+    });
+    if (_isPaused) {
+      _bgPlayer.pause();
+    } else {
+      if (widget.isSoundEnabled) {
+        _bgPlayer.play();
+      }
+    }
+  }
+
+  void _resumeGame() {
+    _togglePause();
+  }
+
+  void _restartGame() {
+    setState(() {
+      _currentQuestion = 0;
+      _selectedOptionIndex = null;
+      _results.clear();
+      _isAnimating = false;
+      _showFullImage = false;
+      _isPaused = false;
+      _secondsLeft = _questionDuration;
+    });
+    _bgPlayer.seek(Duration.zero);
+    if (widget.isSoundEnabled) {
+      _bgPlayer.play();
+    }
+    _startTimer();
+  }
+
+  void _quitGame() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final question = quizQuestions[_currentQuestion];
@@ -311,6 +351,7 @@ class _QuizScreenState extends State<QuizScreen> {
             alignment: Alignment.bottomCenter,
             child: _buildBottomProgressBar(),
           ),
+          if (_isPaused) _buildPauseOverlay(),
         ],
       ),
     );
@@ -389,7 +430,10 @@ class _QuizScreenState extends State<QuizScreen> {
                 trackColor: ringColor.withOpacity(0.18),
               ),
               child: Center(
-                child: Icon(Icons.pause_rounded, color: ringColor, size: 24.sp),
+                child: GestureDetector(
+                  onTap: _togglePause,
+                  child: Icon(Icons.pause_rounded, color: ringColor, size: 24.sp),
+                ),
               ),
             ),
           ),
@@ -832,6 +876,55 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPauseOverlay() {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: Container(
+        color: Colors.black.withOpacity(0.5),
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildPauseButton('RESUME', _resumeGame),
+              SizedBox(height: 16.h),
+              _buildPauseButton('RESTART', _restartGame),
+              SizedBox(height: 16.h),
+              _buildPauseButton('QUIT', _quitGame),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPauseButton(String label, VoidCallback onTap) {
+    return SizedBox(
+      width: 220.w,
+      height: 56.h,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF6B1F3A),
+          elevation: 0,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
           ),
         ),
       ),

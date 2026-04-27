@@ -149,7 +149,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.white),
       ),
-      height: 92.h,
+      height: 98.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

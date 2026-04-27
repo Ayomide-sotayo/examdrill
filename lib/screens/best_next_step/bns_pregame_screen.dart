@@ -201,7 +201,7 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
   Widget _buildStatsRow() {
     return Container(
       width: 342.w,
-      height: 87.h,
+      height: 92.h,
       decoration: BoxDecoration(
         color: const Color(0xFF547A95),
         borderRadius: BorderRadius.circular(16.r),
