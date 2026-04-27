@@ -96,6 +96,9 @@ flutter:
     - assets/images/naplex.png
     - assets/images/pebc.png
     - assets/images/hand.png
+    - assets/images/mouth_straight.png
+    - assets/images/mouth_curve.png
+    - assets/images/check.png
 
     # Audio
     - assets/audio/correct_sound_2.mp3

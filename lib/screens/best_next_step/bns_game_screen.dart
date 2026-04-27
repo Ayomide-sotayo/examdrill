@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:examdril/data/bns_question_data.dart';
 import 'package:examdril/models/bns_question_model.dart';
+import 'package:examdril/screens/best_next_step/bns_instructions_screen.dart';
 import 'package:examdril/screens/best_next_step/bns_option_card.dart';
 import 'package:examdril/screens/best_next_step/bns_pregame_screen.dart';
 import 'package:examdril/screens/best_next_step/bns_result_screen.dart';
@@ -39,12 +40,13 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   Timer? _idleTimer;
   bool _showHandHint = false;
   late AnimationController _hintController;
-  late Animation<Offset> _hintAnim;
+  late Animation<double> _hintAnimation;
 
   late AnimationController _entryController;
   late Animation<Offset> _panelSlide;
 
   late AnimationController _submitPulse;
+  final GlobalKey _panelKey = GlobalKey();
 
   // ── TIMER ───────────────────────────────
   late AnimationController _timerController;
@@ -73,10 +75,9 @@ class _BnsGameScreenState extends State<BnsGameScreen>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-    _hintAnim = Tween<Offset>(begin: Offset.zero, end: const Offset(0.08, 0))
-        .animate(
-          CurvedAnimation(parent: _hintController, curve: Curves.easeInOut),
-        );
+    _hintAnimation = Tween<double>(begin: 0, end: -30.0).animate(
+      CurvedAnimation(parent: _hintController, curve: Curves.easeInOut),
+    );
 
     _submitPulse = AnimationController(
       vsync: this,
@@ -113,7 +114,10 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   void _startIdleTimer() {
     _idleTimer?.cancel();
     _idleTimer = Timer(const Duration(seconds: 5), () {
-      if (!_hasInteracted && mounted && _phase == _Phase.playing && !_isPaused) {
+      if (!_hasInteracted &&
+          mounted &&
+          _phase == _Phase.playing &&
+          !_isPaused) {
         setState(() => _showHandHint = true);
         _hintController.repeat(reverse: true);
       }
@@ -332,19 +336,21 @@ class _BnsGameScreenState extends State<BnsGameScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTopBar(),
-                    SizedBox(height: 12.h),
-                    _buildScenarioText(question.scenario),
-                    SizedBox(height: 14.h),
 
+                    Center(child: _buildScenarioText(question.scenario)),
                     Expanded(
                       child: SlideTransition(
                         position: _panelSlide,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(child: _buildOptionsPanel(question)),
                             SizedBox(height: 12.h),
-                            _buildActionArea(),
+                            Center(child: _buildOptionsPanel(question)),
                             SizedBox(height: 20.h),
+                            SizedBox(
+                              height: 60.h,
+                              child: Center(child: _buildActionArea()),
+                            ),
                           ],
                         ),
                       ),
@@ -432,7 +438,11 @@ class _BnsGameScreenState extends State<BnsGameScreen>
                     color: widget.theme.textColor.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.pause, color: widget.theme.textColor, size: 20.sp),
+                  child: Icon(
+                    Icons.pause,
+                    color: widget.theme.textColor,
+                    size: 20.sp,
+                  ),
                 ),
               ),
               SizedBox(width: 14.w),
@@ -476,18 +486,25 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   //  SCENARIO TEXT
   // ─────────────────────────────────────────
   Widget _buildScenarioText(String scenario) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 350),
-        child: Text(
-          scenario,
-          key: ValueKey(_currentQuestion),
-          style: TextStyle(
-            color: widget.theme.textColor,
-            fontSize: 19.2.sp,
-            fontWeight: FontWeight.w700,
-            height: 1.7,
+    return Container(
+      width: 358.w,
+      height: 183.h,
+      padding: EdgeInsets.only(top: 12.6.h, right: 12.2.w, left: 12.2.w),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.r)),
+      child: SingleChildScrollView(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          child: Text(
+            scenario,
+            key: ValueKey(_currentQuestion),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              color: widget.theme.textColor,
+              fontSize: 19.2.sp,
+              fontWeight: FontWeight.w500, // Medium
+              height: 1.5,
+              letterSpacing: 0,
+            ),
           ),
         ),
       ),
@@ -495,161 +512,171 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   }
 
   // ─────────────────────────────────────────
-  //  OPTIONS PANEL
+  //  OPTIONS PANEL (STACK-BASED FOR FLYING)
   // ─────────────────────────────────────────
+  Offset _getSlotPosition(int slotIndex) {
+    final double x0 = 20.5.w;
+    final double x1 = 133.w;
+    final double x2 = 245.5.w;
+
+    final double y0 = 30.h;
+    final double y1 = 240.h;
+
+    switch (slotIndex) {
+      case 0:
+        return Offset(x0, y0);
+      case 1:
+        return Offset(x1, y0);
+      case 2:
+        return Offset(x2, y0);
+      case 3:
+        return Offset(x0, y1);
+      case 4:
+        return Offset(x1, y1);
+      default:
+        return Offset.zero;
+    }
+  }
+
   Widget _buildOptionsPanel(BnsQuestion question) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.w),
-      padding: EdgeInsets.all(20.w),
+      key: _panelKey,
+      width: 358.w,
+      height: 448.h,
       decoration: BoxDecoration(
         color: widget.theme.cardAreaColor,
         borderRadius: BorderRadius.circular(10.r),
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(child: _buildSlot(0, question)),
-                SizedBox(width: 20.w),
-                Expanded(child: _buildSlot(1, question)),
-                SizedBox(width: 20.w),
-                Expanded(child: _buildSlot(2, question)),
-              ],
+          // 1. Static labels and DragTargets
+          for (int slot = 0; slot < 5; slot++) _buildStaticSlotTarget(slot),
+
+          // 2. The flying/draggable cards
+          for (int opt = 0; opt < 5; opt++) _buildFlyingCard(opt, question),
+
+          // 3. Hand hint icon tracking slot 0
+          if (_showHandHint && !_isPaused)
+            AnimatedBuilder(
+              animation: _hintAnimation,
+              builder: (ctx, child) {
+                final pos0 = _getSlotPosition(0);
+                return Positioned(
+                  left: pos0.dx + 40.w,
+                  top: pos0.dy + 80.h + _hintAnimation.value,
+                  child: IgnorePointer(
+                    child: Image.asset(
+                      'assets/images/hand.png',
+                      width: 48.w,
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-          SizedBox(height: 70.h),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(child: _buildSlot(3, question)),
-                SizedBox(width: 20.w),
-                Expanded(child: _buildSlot(4, question)),
-                SizedBox(width: 20.w),
-                const Expanded(child: SizedBox.shrink()),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildSlot(int slotIndex, BnsQuestion question) {
-    final optionIndex = _slotAssignment[slotIndex];
-    final optionText = question.options[optionIndex];
-    final cardState = _cardStates[slotIndex];
+  Widget _buildStaticSlotTarget(int slotIndex) {
+    final pos = _getSlotPosition(slotIndex);
     final label = kSlotLabels[slotIndex];
 
-    return Column(
-      children: [
-        Expanded(
-          child: _phase == _Phase.playing
-              ? _buildDraggableSlot(
-                  slotIndex,
-                  optionIndex,
-                  optionText,
-                  cardState,
-                )
-              : AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  transitionBuilder: (child, anim) =>
-                      ScaleTransition(scale: anim, child: child),
-                  child: BnsOptionCard(
-                    key: ValueKey('$slotIndex-$optionIndex-static'),
-                    text: optionText,
-                    state: cardState,
-                    themeCardColor: widget.theme.cardColor,
-                  ),
-                ),
+    return Positioned(
+      left: pos.dx,
+      top: pos.dy + 155.h, // Positioned just below where the card sits
+      width: 92.w,
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white.withOpacity(0.9),
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.2,
         ),
-        SizedBox(height: 10.h),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
-          ),
-        ),
-        SizedBox(height: 2.h),
-      ],
+      ),
     );
   }
 
-  Widget _buildDraggableSlot(
-    int slotIndex,
-    int optionIndex,
-    String optionText,
-    BnsCardState cardState,
-  ) {
+  Widget _buildFlyingCard(int optionIndex, BnsQuestion question) {
+    final currentSlot = _slotAssignment.indexOf(optionIndex);
+    final pos = _getSlotPosition(currentSlot);
+    final cardState = _cardStates[currentSlot];
+    final optionText = question.options[optionIndex];
+
     final cardWidget = BnsOptionCard(
-      key: ValueKey('$slotIndex-$optionIndex'),
+      key: ValueKey('opt-$optionIndex'),
       text: optionText,
       state: cardState,
       themeCardColor: widget.theme.cardColor,
+      colorIndex: optionIndex, // Assign distinct color based on option
     );
 
-    return DragTarget<int>(
-      onWillAcceptWithDetails: (details) => details.data != slotIndex,
-      onAcceptWithDetails: (details) => _onSwap(details.data, slotIndex),
-      builder: (ctx, candidates, rejected) {
-        final isHovered = candidates.isNotEmpty;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: Colors.white.withValues(alpha: 0.4),
-                      blurRadius: 10.r,
-                    ),
-                  ]
-                : [],
-          ),
-          child: Draggable<int>(
-            data: slotIndex,
-            onDragStarted: _dismissHint,
-            feedback: Material(
-              color: Colors.transparent,
-              child: SizedBox(
-                width: (MediaQuery.sizeOf(ctx).width - 56.w) / 3,
-                height: 185.h,
-                child: Transform.scale(
-                  scale: 1.06,
-                  child: BnsOptionCard(
-                    text: optionText,
-                    state: cardState,
-                    themeCardColor: widget.theme.cardColor,
-                  ),
-                ),
-              ),
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 550), // Smooth flying animation
+      curve: Curves.easeInOutCubic,
+      left: pos.dx,
+      top: pos.dy,
+      width: 92.w,
+      height: 145.6.h,
+      child: DragTarget<int>(
+        onWillAcceptWithDetails: (details) => details.data != currentSlot,
+        onAcceptWithDetails: (details) => _onSwap(details.data, currentSlot),
+        builder: (ctx, candidates, rejected) {
+          final isHovered = candidates.isNotEmpty;
+          Widget content = AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6.4.r),
+              boxShadow: isHovered
+                  ? [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.4),
+                        blurRadius: 10.r,
+                      ),
+                    ]
+                  : [],
             ),
-            childWhenDragging: Opacity(opacity: 0.2, child: cardWidget),
-            child: cardWidget,
-          ),
-        );
-      },
+            child: _phase == _Phase.playing
+                ? Draggable<int>(
+                    data: currentSlot,
+                    onDragStarted: _dismissHint,
+                    feedback: cardWidget, // No scaling
+                    childWhenDragging: Opacity(opacity: 0.2, child: cardWidget),
+                    child: cardWidget,
+                  )
+                : cardWidget,
+          );
+
+          // Animate card 0 moving slightly with the hand
+          if (_showHandHint && !_isPaused && currentSlot == 0 && _phase == _Phase.playing) {
+            return AnimatedBuilder(
+              animation: _hintAnimation,
+              builder: (ctx, child) {
+                return Transform.translate(
+                  offset: Offset(0, _hintAnimation.value),
+                  child: child,
+                );
+              },
+              child: content,
+            );
+          }
+
+          return content;
+        },
+      ),
     );
   }
 
   Widget _buildActionArea() {
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOut,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _phase == _Phase.corrected
-            ? _buildContinueButton()
-            : _showSubmit
-            ? _buildSubmitButton()
-            : const SizedBox.shrink(),
-      ),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: _phase == _Phase.corrected
+          ? _buildContinueButton()
+          : _showSubmit
+          ? _buildSubmitButton()
+          : const SizedBox.shrink(),
     );
   }
 
@@ -713,37 +740,52 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   }
 
   Widget _buildHandHint() {
-    return Positioned(
-      bottom: 100.h,
-      left: 0,
-      right: 0,
+    Offset panelOffset = Offset.zero;
+    if (_panelKey.currentContext != null) {
+      final RenderBox box =
+          _panelKey.currentContext!.findRenderObject() as RenderBox;
+      panelOffset = box.localToGlobal(Offset.zero);
+    }
+    final pos0 = _getSlotPosition(0);
+
+    return Positioned.fill(
       child: IgnorePointer(
-        child: Center(
-          child: SlideTransition(
-            position: _hintAnim,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(30.r),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.swipe_rounded, color: Colors.white, size: 20.sp),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Drag cards to swap',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+        child: Stack(
+          children: [
+            // Dark Overlay
+            Container(color: Colors.black.withOpacity(0.8)),
+
+            // The Hand (Tracking Slot 0)
+            AnimatedBuilder(
+              animation: _hintAnimation,
+              builder: (ctx, child) {
+                return Positioned(
+                  left: panelOffset.dx + pos0.dx + 40.w,
+                  top: panelOffset.dy + pos0.dy + 80.h + _hintAnimation.value,
+                  child: Image.asset(
+                    'assets/images/hand.png',
+                    width: 48.w,
                   ),
-                ],
+                );
+              },
+            ),
+
+            // Hint Text
+            Positioned(
+              top: panelOffset.dy + 448.h + 30.h, // A little below the options panel
+              left: 0,
+              right: 0,
+              child: Text(
+                'Swap the cards to play',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -779,7 +821,14 @@ class _BnsGameScreenState extends State<BnsGameScreen>
             _buildPauseButton('Quit', () => Navigator.pop(context)),
             SizedBox(height: 80.h),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BnsInstructionsScreen(theme: widget.theme),
+                  ),
+                );
+              },
               child: Text(
                 'Game Instructions',
                 style: TextStyle(
@@ -806,7 +855,9 @@ class _BnsGameScreenState extends State<BnsGameScreen>
           backgroundColor: widget.theme.cardColor,
           foregroundColor: Colors.white,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.r),
+          ),
         ),
         child: Text(
           label,

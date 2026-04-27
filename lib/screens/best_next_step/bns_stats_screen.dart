@@ -7,7 +7,7 @@ import 'package:examdril/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BnsStatsScreen extends StatelessWidget {
+class BnsStatsScreen extends StatefulWidget {
   final int score;
   final int perfectRounds;
   final int totalQuestions;
@@ -22,6 +22,26 @@ class BnsStatsScreen extends StatelessWidget {
     required this.results,
     required this.theme,
   });
+
+  @override
+  State<BnsStatsScreen> createState() => _BnsStatsScreenState();
+}
+
+class _BnsStatsScreenState extends State<BnsStatsScreen> {
+  bool _showFeedbackConfirmation = false;
+  bool _feedbackWasPositive = false;
+
+  void _onFeedbackTap(bool isPositive) {
+    setState(() {
+      _feedbackWasPositive = isPositive;
+      _showFeedbackConfirmation = true;
+    });
+    Future.delayed(const Duration(milliseconds: 4500), () {
+      if (mounted) {
+        setState(() => _showFeedbackConfirmation = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +114,9 @@ class BnsStatsScreen extends StatelessWidget {
         letterSpacing: 1,
       );
 
+  Color get _themeCardColor => widget.theme.cardAreaColor;
+  Color get _themeAccentColor => widget.theme.cardColor;
+
   Widget _buildCard({
     required Widget child,
     required Color color,
@@ -146,7 +169,7 @@ class BnsStatsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'HIGH SCORE: $score',
+                      'HIGH SCORE: ${widget.score}',
                       style: _labelStyle,
                     ),
                   ],
@@ -159,7 +182,7 @@ class BnsStatsScreen extends StatelessWidget {
             height: 60.h,
             width: double.infinity,
             child: CustomPaint(
-              painter: _LineChartPainter(score: score),
+              painter: _LineChartPainter(score: widget.score),
             ),
           ),
         ],
@@ -303,7 +326,7 @@ class BnsStatsScreen extends StatelessWidget {
 
   Widget _buildAccuracyCard(Color color) {
     final accuracyPercent =
-        (perfectRounds / math.max(1, totalQuestions) * 100).round();
+        (widget.perfectRounds / math.max(1, widget.totalQuestions) * 100).round();
     return _buildCard(
       color: color,
       child: Column(
@@ -328,14 +351,14 @@ class BnsStatsScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(totalQuestions, (i) {
+            children: List.generate(widget.totalQuestions, (i) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 4.w),
                 width: 8.w,
                 height: 8.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: i < perfectRounds
+                  color: i < widget.perfectRounds
                       ? const Color(0xFF54CA6E)
                       : const Color(0xFFCF594A),
                 ),
@@ -354,7 +377,7 @@ class BnsStatsScreen extends StatelessWidget {
         children: [
           Text('CONTENT REPORT', style: _labelStyle),
           SizedBox(height: 20.h),
-          ...results.take(2).map((res) => _buildReportItem(res)),
+          ...widget.results.take(2).map((res) => _buildReportItem(res)),
           SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
@@ -363,7 +386,7 @@ class BnsStatsScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => BnsFeedbackScreen(results: results),
+                    builder: (_) => BnsFeedbackScreen(results: widget.results),
                   ),
                 );
               },
@@ -425,6 +448,7 @@ class BnsStatsScreen extends StatelessWidget {
                     text: res.question.options[optIdx],
                     state: state,
                     themeCardColor: const Color(0xFF2C3947),
+                    colorIndex: optIdx,
                   ),
                 ),
               );
@@ -440,36 +464,89 @@ class BnsStatsScreen extends StatelessWidget {
   }
 
   Widget _buildFeedbackCard(Color color) {
-    return _buildCard(
-      color: color,
-      child: Column(
-        children: [
-          Text('FEEDBACK', style: _labelStyle),
-          SizedBox(height: 16.h),
-          Text(
-            'Did you find this game helpful ?',
-            style: TextStyle(color: Colors.white, fontSize: 14.sp),
-          ),
-          SizedBox(height: 16.h),
-          Row(
+    return Column(
+      children: [
+        _buildCard(
+          color: color,
+          child: Column(
             children: [
-              Expanded(
-                child: _buildOutlineButton('No'),
+              Text('FEEDBACK', style: _labelStyle),
+              SizedBox(height: 16.h),
+              Text(
+                'Did you find this game helpful ?',
+                style: TextStyle(color: Colors.white, fontSize: 14.sp),
               ),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: _buildOutlineButton('Yes'),
+              SizedBox(height: 16.h),
+              Row(
+                children: [
+                  Expanded(child: _buildOutlineButton('No', false)),
+                  SizedBox(width: 16.w),
+                  Expanded(child: _buildOutlineButton('Yes', true)),
+                ],
               ),
             ],
+          ),
+        ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          transitionBuilder: (child, anim) => SlideTransition(
+            position: Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero)
+                .animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+            child: FadeTransition(opacity: anim, child: child),
+          ),
+          child: _showFeedbackConfirmation
+              ? _buildFeedbackConfirmation()
+              : const SizedBox.shrink(key: ValueKey('hidden')),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeedbackConfirmation() {
+    return Container(
+      key: const ValueKey('feedback_confirmation'),
+      margin: EdgeInsets.only(top: 12.h),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2C3947),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'FEEDBACK',
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: Colors.white.withOpacity(0.6),
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            _feedbackWasPositive
+                ? 'Workouts will adjust based on your feedback'
+                : 'Thanks! We will work on making it better',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white, fontSize: 14.sp),
+          ),
+          SizedBox(height: 20.h),
+          Image.asset(
+            'assets/images/check.png',
+            width: 64.w,
+            color: Colors.white,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.check, color: Colors.white, size: 48.sp),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOutlineButton(String text) {
+  Widget _buildOutlineButton(String text, bool isPositive) {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: () => _onFeedbackTap(isPositive),
       style: OutlinedButton.styleFrom(
         side: const BorderSide(color: Colors.white24),
         shape: RoundedRectangleBorder(

@@ -3,75 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ─────────────────────────────────────────────
-//  FACE PAINTER
-// ─────────────────────────────────────────────
-class _FacePainter extends CustomPainter {
-  final BnsCardState state;
-  final Color color;
-
-  _FacePainter({required this.state, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final fillPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    final linePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
-      ..strokeCap = StrokeCap.round;
-
-    final cx = size.width / 2;
-    const eyeRadius = 3.0;
-    final eyeY = size.height * 0.22;
-    final eyeOffset = size.width * 0.19;
-
-    canvas.drawCircle(Offset(cx - eyeOffset, eyeY), eyeRadius, fillPaint);
-    canvas.drawCircle(Offset(cx + eyeOffset, eyeY), eyeRadius, fillPaint);
-
-    final mL = cx - eyeOffset * 1.5;
-    final mR = cx + eyeOffset * 1.5;
-    final mY = size.height * 0.65;
-    final path = Path();
-
-    if (state == BnsCardState.correct || state == BnsCardState.correction) {
-      path.moveTo(mL, mY - size.height * 0.05);
-      path.quadraticBezierTo(cx, mY + size.height * 0.18, mR, mY - size.height * 0.05);
-    } else if (state == BnsCardState.wrong) {
-      path.moveTo(mL, mY + size.height * 0.05);
-      path.quadraticBezierTo(cx, mY - size.height * 0.18, mR, mY + size.height * 0.05);
-    } else {
-      path.moveTo(mL, mY);
-      path.lineTo(mR, mY);
-    }
-    canvas.drawPath(path, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(_FacePainter old) =>
-      old.state != state || old.color != color;
-}
-
-// ─────────────────────────────────────────────
 //  CARD WIDGET
 // ─────────────────────────────────────────────
 class BnsOptionCard extends StatelessWidget {
   final String text;
   final BnsCardState state;
   final Color themeCardColor;
+  final int colorIndex;
 
   static const _correctBg = Color(0xFF4DB89A);
-  static const _wrongBg = Color(0xFF5C2020);
-  static const _correctionFg = Color(0xFF1A3D2B);
-  static const _redBar = Color(0xFFE53935);
+  static const _wrongBg = Color(0xFF4A2B29);
+  static const _correctionFg = Color(0xFF0A2A22);
+
+  static const List<Color> _normalBarColors = [
+    Color(0xFFEFA59C), // Salmon
+    Color(0xFF89B3E6), // Soft Blue
+    Color(0xFFF1D483), // Soft Yellow
+    Color(0xFF98D1A3), // Soft Green
+    Color(0xFFD6A3D4), // Soft Purple
+  ];
 
   const BnsOptionCard({
     super.key,
     required this.text,
     required this.state,
     required this.themeCardColor,
+    required this.colorIndex,
   });
 
   @override
@@ -86,7 +43,7 @@ class BnsOptionCard extends StatelessWidget {
         bgColor = themeCardColor;
         faceColor = Colors.white;
         textColor = Colors.white;
-        barColor = Colors.white;
+        barColor = _normalBarColors[colorIndex % _normalBarColors.length];
       case BnsCardState.correct:
         bgColor = _correctBg;
         faceColor = Colors.white;
@@ -96,12 +53,12 @@ class BnsOptionCard extends StatelessWidget {
         bgColor = _wrongBg;
         faceColor = Colors.white;
         textColor = Colors.white;
-        barColor = _redBar;
+        barColor = Colors.white; // White on correct and wrong
       case BnsCardState.correction:
         bgColor = Colors.white;
         faceColor = _correctionFg;
         textColor = _correctionFg;
-        barColor = _correctionFg;
+        barColor = _correctionFg; // Green on correction
     }
 
     // FIX: replaced Column with Spacer() (which caused RenderFlex overflow
@@ -114,9 +71,11 @@ class BnsOptionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 450),
       curve: Curves.easeInOut,
+      width: 92.w,
+      height: 145.6.h,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(6.4.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,8 +90,52 @@ class BnsOptionCard extends StatelessWidget {
                 key: ValueKey(state),
                 width: 60.w,
                 height: 36.h,
-                child: CustomPaint(
-                  painter: _FacePainter(state: state, color: faceColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Eyes
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 4.w,
+                          height: 4.w,
+                          decoration: BoxDecoration(color: faceColor, shape: BoxShape.circle),
+                        ),
+                        SizedBox(width: 14.w),
+                        Container(
+                          width: 4.w,
+                          height: 4.w,
+                          decoration: BoxDecoration(color: faceColor, shape: BoxShape.circle),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.h),
+                    // Mouth
+                    state == BnsCardState.wrong
+                        ? Transform.rotate(
+                            angle: 3.14159, // 180 degrees
+                            child: Image.asset(
+                              'assets/images/mouth_curve.png',
+                              color: faceColor,
+                              width: 32.w,
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : state == BnsCardState.correct || state == BnsCardState.correction
+                            ? Image.asset(
+                                'assets/images/mouth_curve.png',
+                                color: faceColor,
+                                width: 32.w,
+                                fit: BoxFit.contain,
+                              )
+                            : Image.asset(
+                                'assets/images/mouth_straight.png',
+                                color: faceColor,
+                                width: 32.w,
+                                fit: BoxFit.contain,
+                              ),
+                  ],
                 ),
               ),
             ),
@@ -150,10 +153,12 @@ class BnsOptionCard extends StatelessWidget {
               child: AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 450),
                 style: TextStyle(
+                  fontFamily: 'Roboto',
                   color: textColor,
-                  fontSize: 11.sp,
+                  fontSize: 9.6.sp,
                   fontWeight: FontWeight.w600,
-                  height: 1.35,
+                  height: 1.0,
+                  letterSpacing: 0,
                 ),
                 child: Text(
                   text,

@@ -889,6 +889,7 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
                           children: question.explanation.map((span) {
                             Color color;
                             FontWeight weight;
+                            String text = span.text;
                             switch (span.type) {
                               case SpanType.correct:
                                 color = _kGreen;
@@ -897,6 +898,10 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
                               case SpanType.wrong:
                                 color = _kRed;
                                 weight = FontWeight.w700;
+                                if (_selectedOptionIndex != null && 
+                                    _selectedOptionIndex != question.correctIndex) {
+                                  text = question.options[_selectedOptionIndex!].toUpperCase();
+                                }
                                 break;
                               case SpanType.plain:
                                 color = Colors.black87;
@@ -904,7 +909,7 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
                                 break;
                             }
                             return TextSpan(
-                              text: span.text,
+                              text: text,
                               style: TextStyle(
                                 color: color,
                                 fontWeight: weight,

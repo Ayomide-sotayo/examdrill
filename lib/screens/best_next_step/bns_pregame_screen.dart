@@ -1,4 +1,5 @@
 import 'package:examdril/screens/best_next_step/bns_game_screen.dart';
+import 'package:examdril/screens/best_next_step/bns_instructions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -126,10 +127,22 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
           ),
           Row(
             children: [
-              Icon(
-                Icons.help_outline_rounded,
-                color: Color(0xFF2C3947),
-                size: 22.sp,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BnsInstructionsScreen(
+                        theme: _themeChosen ? kBnsThemes[_selectedTheme] : kBnsThemes[1],
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.help_outline_rounded,
+                  color: Color(0xFF2C3947),
+                  size: 22.sp,
+                ),
               ),
               SizedBox(width: 16.w),
               Icon(

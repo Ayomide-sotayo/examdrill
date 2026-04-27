@@ -101,6 +101,7 @@ class _FeedbackCard extends StatelessWidget {
                                 text: optionText,
                                 state: state,
                                 themeCardColor: const Color(0xFF34404E),
+                                colorIndex: optionIdx,
                               ),
                             ),
                             SizedBox(height: 8.h),
