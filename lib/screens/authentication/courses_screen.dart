@@ -79,7 +79,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                       SizedBox(height: 32.h),
                       // Title
                       Text(
-                        'Select a course to enroll in',
+                        'Start your learning journey',
                         style: GoogleFonts.roboto(
                           fontSize: 28.sp,
                           fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                       SizedBox(height: 8.h),
                       // Subtitle
                       Text(
-                        'Choose a course that fits your goals to unlock your potential.',
+                        'Choose a course that fits your goals and begin your first step today',
                         style: GoogleFonts.roboto(
                           fontSize: 16.sp,
                           color: const Color(0xFF7D7D7D),

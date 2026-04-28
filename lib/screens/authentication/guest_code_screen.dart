@@ -107,7 +107,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                 SizedBox(height: 32.h),
                 // Title
                 Text(
-                  'Enter Guest Code',
+                  'Enter Invite Code',
                   style: GoogleFonts.roboto(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                 SizedBox(height: 8.h),
                 // Subtitle
                 Text(
-                  'Only invited users can access the product.\nEnter your code to continue',
+                  'Private beta access is currently limited to invited users Enter your code to unlock the PEBC Readiness Pack',
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     color: const Color(0xFF7D7D7D),

@@ -18,10 +18,7 @@ class PaywallScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFF4A62),
-              Color(0xFFF5F5F5),
-            ],
+            colors: [Color(0xFFFF4A62), Color(0xFFF5F5F5)],
             stops: [0.0, 1.0],
           ),
         ),
@@ -61,19 +58,21 @@ class PaywallScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 50.h),
-                  
+
                   // Title
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: GoogleFonts.roboto(
-                        fontSize: 24.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         height: 1.2,
                       ),
                       children: [
-                        const TextSpan(text: 'Unlock to access full features\nfor '),
+                        const TextSpan(
+                          text: 'Unlock to access PEBC Readiness Pack\nfor ',
+                        ),
                         TextSpan(
                           text: '\$299.99',
                           style: TextStyle(
@@ -86,51 +85,66 @@ class PaywallScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20.h),
-                  
+                  SizedBox(height: 18.h),
+
                   // Subtitle
                   Text(
-                    'The PEBC exam pack is currently\nin BETA. Only invited guests can unlock.',
+                    'Get private beta access to PEBC-style practice, readiness games and weak area insights built to help you prepare with more confidence',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.roboto(
-                      fontSize: 16.sp,
+                      fontSize: 15.sp,
                       color: Colors.white.withOpacity(0.9),
                       height: 1.4,
                     ),
                   ),
-                  SizedBox(height: 40.h),
-                  
+                  SizedBox(height: 20.h),
+
                   // Glassmorphism Features Card
                   ClipRRect(
                     borderRadius: BorderRadius.circular(24.r),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 24.h,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(24.r),
-                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                          ),
                         ),
                         child: Column(
                           children: [
-                            _buildFeatureItem('4+ Engaging Cognitive Games'),
-                            _buildFeatureDivider(),
-                            _buildFeatureItem('1000+ Question Bank & Drills'),
-                            _buildFeatureDivider(),
-                            _buildFeatureItem('Stay Sharp With Puzzles'),
-                            _buildFeatureDivider(),
-                            _buildFeatureItem('Understand your strengths'),
-                            _buildFeatureDivider(),
-                            _buildFeatureItem('Learn All Exam Tricks & Strategies'),
+                            _buildFeatureItem(
+                              '10+ readiness games for recall speed and exam thinking',
+                            ),
+
+                            _buildFeatureItem(
+                              '20,000+ PEBC style questions and Drills',
+                            ),
+
+                            _buildFeatureItem(
+                              'Blueprint -aligned practice across PEBC domains',
+                            ),
+
+                            _buildFeatureItem(
+                              'Weak-area insights by skill and topic',
+                            ),
+
+                            _buildFeatureItem(
+                              'Explanations, hints, and wrong answer rationales',
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  
-                  SizedBox(height: 60.h),
-                  
+
+                  SizedBox(height: 40.h),
+
                   // Action Button (Teal Gradient Button)
                   Center(
                     child: Container(
@@ -152,7 +166,9 @@ class PaywallScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const GuestCodeScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const GuestCodeScreen(),
+                            ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -175,9 +191,9 @@ class PaywallScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   SizedBox(height: 24.h),
-                  
+
                   // Footer Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -237,9 +253,6 @@ class PaywallScreen extends StatelessWidget {
   }
 
   Widget _buildFeatureDivider() {
-    return Divider(
-      color: Colors.white.withOpacity(0.1),
-      height: 1,
-    );
+    return Divider(color: Colors.white.withOpacity(0.1), height: 1);
   }
 }

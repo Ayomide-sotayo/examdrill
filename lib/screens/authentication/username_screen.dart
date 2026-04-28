@@ -87,7 +87,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                 SizedBox(height: 32.h),
                 // Title
                 Text(
-                  'What Do We Call You?',
+                  'Tell us your name',
                   style: GoogleFonts.roboto(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                 SizedBox(height: 8.h),
                 // Subtitle
                 Text(
-                  'Welcome! Please enter your name so we can personalize your experience.',
+                  'Welcome to ExamDash',
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     color: const Color(0xFF7D7D7D),

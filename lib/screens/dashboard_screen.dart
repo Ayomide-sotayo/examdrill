@@ -36,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SizedBox(height: 20.h),
               _buildGameCard(
                 title: 'Best Next Step',
-                subtitle: 'Improve your reading comprehension.',
+                subtitle: 'Train your clinical judgement by choosing the right action in PEBC style cases',
                 bgImage: 'assets/images/bns_bg.png',
                 iconImage: 'assets/images/feet.png',
                 onTap: () => Navigator.push(
@@ -47,7 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SizedBox(height: 20.h),
               _buildGameCard(
                 title: 'Practice Drill',
-                subtitle: 'Improve your reading comprehension.',
+                subtitle: 'Build speed, accuracy and confidence with focused PEBC practice questions',
                 bgImage: 'assets/images/pd_bg.png',
                 iconImage: 'assets/images/bulb2.png',
                 onTap: () => Navigator.push(
@@ -239,7 +239,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: onTap,
         child: Container(
           width: 336.w,
-          height: 180.h,
+          height: 200.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
             image: DecorationImage(
@@ -305,6 +305,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.white.withOpacity(0.9),
                       ),
                     ),
+                    SizedBox(height: 10.h),
                   ],
                 ),
                 // Play Now Button
