@@ -536,8 +536,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     final double x1 = 126.w;
     final double x2 = 241.w;
 
-    final double y0 = 50.h;
-    final double y1 = 270.h;
+    final double y0 = 30.h;
+    final double y1 = 250.h;
 
     switch (slotIndex) {
       case 0:
