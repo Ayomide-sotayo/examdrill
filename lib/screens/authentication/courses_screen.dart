@@ -25,53 +25,77 @@ class _CoursesScreenState extends State<CoursesScreen> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10.h),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            width: 44.w,
-                            height: 38.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(17.r),
-                              boxShadow: [
-                                const BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                      SizedBox(height: 20.h),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 48.w,
+                          height: 37.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(9999.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 6.9,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              color: Colors.black,
+                              size: 24.sp,
                             ),
-                            child: Icon(Icons.chevron_left, color: Colors.black, size: 28.sp),
                           ),
                         ),
                       ),
                       SizedBox(height: 40.h),
+                      // Course Icon in a Circle
+                      Container(
+                        width: 50.w,
+                        height: 50.w,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/course.png',
+                            width: 50.w,
+                            height: 50.w,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.book_rounded,
+                              size: 50.sp,
+                              color: Colors.black26,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 32.h),
                       // Title
                       Text(
-                        'Select a course to\nenroll in on Exam Dash',
-                        textAlign: TextAlign.center,
+                        'Select a course to enroll in',
                         style: GoogleFonts.roboto(
-                          fontSize: 21.37.sp,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 28.sp,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 8.h),
                       // Subtitle
                       Text(
-                        'Choose a course that fits your goals to\nunlock your potential.',
-                        textAlign: TextAlign.center,
+                        'Choose a course that fits your goals to unlock your potential.',
                         style: GoogleFonts.roboto(
-                          fontSize: 14.65.sp,
+                          fontSize: 16.sp,
                           color: const Color(0xFF7D7D7D),
                         ),
                       ),
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 48.h),
                       
                       // PEBC Option
                       _buildCourseOption(
@@ -110,38 +134,55 @@ class _CoursesScreenState extends State<CoursesScreen> {
                 ),
               ),
             ),
-            // Proceed Button pinned to bottom
+            // Proceed Button pinned to bottom (Matching SignInScreen style)
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
-              child: SizedBox(
-                width: double.infinity,
-                height: 56.h,
-                child: ElevatedButton(
-                  onPressed: _selectedCourse != null
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PaywallScreen()),
-                        );
-                      }
-                    : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _selectedCourse != null 
-                        ? const Color(0xFF469EFF) 
-                        : const Color(0xFF469EFF).withOpacity(0.3),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: const Color(0xFF469EFF).withOpacity(0.3),
-                    disabledForegroundColor: Colors.white.withOpacity(0.7),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.r),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+              child: Center(
+                child: Container(
+                  width: 337.w,
+                  height: 49.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: _selectedCourse != null
+                          ? [const Color(0xFFFF5B40), const Color(0xFFFF4172)]
+                          : [
+                                const Color(0xFFFF5B40).withOpacity(0.5),
+                                const Color(0xFFFF4172).withOpacity(0.5)
+                              ],
+                    ),
+                    borderRadius: BorderRadius.circular(9999.r),
+                    border: Border.all(
+                      color: Colors.black.withOpacity(0.1),
+                      width: 0.7,
                     ),
                   ),
-                  child: Text(
-                    'Proceed',
-                    style: GoogleFonts.roboto(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
+                  child: ElevatedButton(
+                    onPressed: _selectedCourse != null
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const PaywallScreen()),
+                          );
+                        }
+                      : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shadowColor: Colors.transparent,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9999.r),
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Text(
+                      'Proceed',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -160,74 +201,93 @@ class _CoursesScreenState extends State<CoursesScreen> {
     required bool isSelected,
     VoidCallback? onTap,
   }) {
-    return GestureDetector(
-      onTap: isLocked ? null : onTap,
-      child: Container(
-        width: 337.w,
-        height: 70.h,
-        padding: EdgeInsets.only(top: 8.h, bottom: 8.h, left: 12.w, right: 12.w),
-        decoration: BoxDecoration(
-          color: isLocked ? const Color(0xFFEEEEEE) : Colors.white,
-          borderRadius: BorderRadius.circular(24.r),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF469EFF) : (isLocked ? Colors.transparent : const Color(0xFFE5E5E5)),
-            width: 1,
+    return Center(
+      child: GestureDetector(
+        onTap: isLocked ? null : onTap,
+        child: Container(
+          width: 337.w,
+          height: 56.h,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          decoration: BoxDecoration(
+            color: isLocked ? const Color(0xFFEEEEEE).withOpacity(0.6) : Colors.white,
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: isSelected ? const Color(0xFFFF5B40) : const Color(0xFFE0E0E0),
+              width: 1.0,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            // Logo inside a circle (white background)
-            Container(
-              width: 50.w,
-              height: 50.w,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(6.w),
-                child: Image.asset(imagePath, fit: BoxFit.contain),
-              ),
-            ),
-            SizedBox(width: 16.w),
-            // Title
-            Expanded(
-              child: Text(
-                title,
-                style: GoogleFonts.roboto(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isLocked ? const Color(0xFF8C8C8C) : const Color(0xFF5A5A5A),
-                ),
-              ),
-            ),
-            // Icon on the right
-            if (isLocked)
-              Container(
-                width: 24.w,
-                height: 24.w,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Icon(Icons.lock, color: const Color(0xFFDCDCDC), size: 14.sp),
-                ),
-              )
-            else
-              Container(
-                width: 24.w,
-                height: 24.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? const Color(0xFF469EFF) : Colors.transparent,
-                  border: Border.all(
-                    color: isSelected ? const Color(0xFF469EFF) : const Color(0xFFDCDCDC),
-                    width: 1.5,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  // Logo inside a circle
+                  Container(
+                    width: 40.w,
+                    height: 40.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFFF0F0F0)),
+                    ),
+                    child: Center(
+                      child: Image.asset(imagePath, width: 24.w, fit: BoxFit.contain),
+                    ),
                   ),
-                ),
+                  SizedBox(width: 12.w),
+                  // Title
+                  Text(
+                    title,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: isLocked ? const Color(0xFF8C8C8C) : Colors.black,
+                    ),
+                  ),
+                ],
               ),
-          ],
+              // Indicator
+              if (isLocked)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Coming Soon',
+                        style: GoogleFonts.roboto(
+                          fontSize: 11.sp,
+                          color: const Color(0xFFFF5B40),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Icon(Icons.lock, color: const Color(0xFFFF5B40), size: 12.sp),
+                    ],
+                  ),
+                )
+              else
+                Container(
+                  width: 20.w,
+                  height: 20.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected ? const Color(0xFFFF5B40) : Colors.transparent,
+                    border: Border.all(
+                      color: isSelected ? const Color(0xFFFF5B40) : const Color(0xFFDCDCDC),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: isSelected 
+                      ? Icon(Icons.check, color: Colors.white, size: 14.sp)
+                      : null,
+                ),
+            ],
+          ),
         ),
       ),
     );

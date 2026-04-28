@@ -140,20 +140,14 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
                 },
                 child: Icon(
                   Icons.help_outline_rounded,
-                  color: Color(0xFF2C3947),
+                  color: const Color(0xFF2C3947),
                   size: 22.sp,
                 ),
               ),
               SizedBox(width: 16.w),
               Icon(
-                Icons.favorite_border_rounded,
-                color: Color(0xFF2C3947),
-                size: 22.sp,
-              ),
-              SizedBox(width: 16.w),
-              Icon(
                 Icons.volume_up_outlined,
-                color: Color(0xFF2C3947),
+                color: const Color(0xFF2C3947),
                 size: 22.sp,
               ),
             ],
@@ -278,25 +272,30 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
               ),
             ),
             SizedBox(height: 25.h),
-            _benefitItem('Improve your clinical decision-making.'),
+            _benefitItem('Trains exam-style judgement', icon: Icons.assignment_rounded),
             SizedBox(height: 25.h),
-            _benefitItem('Build systematic management skills.'),
+            _benefitItem('Builds real readiness, not just recall', icon: Icons.lightbulb_outline_rounded),
+            SizedBox(height: 25.h),
+            _benefitItem('Reveals why answers are wrong', icon: Icons.search_rounded),
           ],
         ),
       ),
     );
   }
 
-  Widget _benefitItem(String text) {
+  Widget _benefitItem(String text, {IconData? icon}) {
     return Row(
       children: [
-        Image.asset(
-          'assets/images/benefit.png',
-          height: 25.h,
-          width: 21.3.w,
-          errorBuilder: (_, __, ___) =>
-              Icon(Icons.psychology_outlined, color: Colors.white, size: 22.sp),
-        ),
+        if (icon != null)
+          Icon(icon, color: Colors.white, size: 24.sp)
+        else
+          Image.asset(
+            'assets/images/benefit.png',
+            height: 25.h,
+            width: 21.3.w,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.psychology_outlined, color: Colors.white, size: 22.sp),
+          ),
         SizedBox(width: 12.w),
         Expanded(
           child: Text(

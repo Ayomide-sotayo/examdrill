@@ -79,18 +79,6 @@ class _PreGameScreenState extends State<PreGameScreen> {
           Row(
             children: [
               Icon(
-                Icons.help_outline_rounded,
-                color: Colors.white70,
-                size: 22.sp,
-              ),
-              SizedBox(width: 16.w),
-              Icon(
-                Icons.favorite_border_rounded,
-                color: Colors.white70,
-                size: 22.sp,
-              ),
-              SizedBox(width: 16.w),
-              Icon(
                 Icons.volume_up_outlined,
                 color: Colors.white70,
                 size: 22.sp,

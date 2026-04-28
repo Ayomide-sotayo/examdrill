@@ -19,11 +19,10 @@ class PaywallScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF003395),
-              Color(0xFF003395), // Stay blue longer
-              Colors.white,
+              Color(0xFFFF4A62),
+              Color(0xFFF5F5F5),
             ],
-            stops: [0.0, 0.6, 1.0], // Blue until 60%, then transition to white
+            stops: [0.0, 1.0],
           ),
         ),
         child: SafeArea(
@@ -33,20 +32,31 @@ class PaywallScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Back Button (Matching Verification Screen)
                   Align(
                     alignment: Alignment.centerLeft,
                     child: GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
-                        width: 44.w,
-                        height: 38.w,
+                        width: 48.w,
+                        height: 37.h,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2), // Glassy back button
-                          borderRadius: BorderRadius.circular(17.r),
-                          border: Border.all(color: Colors.white24),
+                          color: Colors.white.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(9999.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 6.9,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
                         ),
-                        child: Icon(Icons.chevron_left, color: Colors.white, size: 28.sp),
+                        child: Center(
+                          child: Icon(
+                            Icons.chevron_left_rounded,
+                            color: Colors.white,
+                            size: 24.sp,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -121,30 +131,46 @@ class PaywallScreen extends StatelessWidget {
                   
                   SizedBox(height: 60.h),
                   
-                  // Action Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const GuestCodeScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF469EFF),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.r),
+                  // Action Button (Teal Gradient Button)
+                  Center(
+                    child: Container(
+                      width: 337.w,
+                      height: 49.h,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xFFFF5B40), Color(0xFFFF4172)],
+                        ),
+                        borderRadius: BorderRadius.circular(9999.r),
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.1),
+                          width: 0.7,
                         ),
                       ),
-                      child: Text(
-                        'Enter Guest Code',
-                        style: GoogleFonts.roboto(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const GuestCodeScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          shadowColor: Colors.transparent,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9999.r),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Text(
+                          'Enter Guest Code',
+                          style: GoogleFonts.roboto(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -168,9 +194,11 @@ class PaywallScreen extends StatelessWidget {
                         child: Text(
                           'Learn more about our beta test',
                           style: GoogleFonts.roboto(
-                            color: const Color(0xFF469EFF),
+                            color: const Color(0xFFFF5B40),
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                            decorationColor: const Color(0xFFFF5B40),
                           ),
                         ),
                       ),
@@ -202,7 +230,7 @@ class PaywallScreen extends StatelessWidget {
               ),
             ),
           ),
-          Icon(Icons.check_rounded, color: const Color(0xFF00FF00), size: 24.sp),
+          Icon(Icons.check_rounded, color: Colors.white, size: 24.sp),
         ],
       ),
     );

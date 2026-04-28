@@ -99,6 +99,16 @@ flutter:
     - assets/images/mouth_straight.png
     - assets/images/mouth_curve.png
     - assets/images/check.png
+    - assets/images/logo.png
+    - assets/images/mail.png
+    - assets/images/code.png
+    - assets/images/course.png
+    - assets/images/bns_bg.png
+    - assets/images/pd_bg.png
+    - assets/images/bulb2.png
+    - assets/images/feet.png
+    - assets/images/splash_bg.png
+    - assets/images/arrow.png
 
     # Audio
     - assets/audio/correct_sound_2.mp3

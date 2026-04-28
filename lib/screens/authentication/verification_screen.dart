@@ -75,65 +75,78 @@ class _VerificationScreenState extends State<VerificationScreen> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 44.w,
-                      height: 38.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(17.r),
-                        boxShadow: [
-                          const BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                SizedBox(height: 20.h),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: 48.w,
+                    height: 37.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(9999.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 6.9,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.chevron_left_rounded,
+                        color: Colors.black,
+                        size: 24.sp,
                       ),
-                      child: Icon(Icons.chevron_left, color: Colors.black, size: 28.sp),
                     ),
                   ),
                 ),
-                SizedBox(height: 20.h),
-                // Mascot Image
-                Center(
-                  child: Image.asset(
-                    'assets/images/signinmascot.png',
-                    width: 120.w,
-                    height: 120.w,
-                    fit: BoxFit.contain,
+                SizedBox(height: 40.h),
+                // Mail Icon in a Circle (matching SignInScreen)
+                Container(
+                  width: 50.w,
+                  height: 50.w,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Center(
+                    // Faded icon as seen in the image
+                    child: Image.asset(
+                      'assets/images/code.png',
+                      width: 50.w,
+                      height: 50.w,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.qr_code_2_rounded,
+                        size: 50.sp,
+                        color: Colors.black26,
+                      ),
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 32.h),
                 // Title
                 Text(
-                  'Check email for code',
+                  'Enter Code',
                   style: GoogleFonts.roboto(
-                    fontSize: 24.sp,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(height: 8.h),
                 // Subtitle
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Text(
-                    'Enter the verification code sent to ${widget.email}',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
-                      fontSize: 16.sp,
-                      color: const Color(0xFF7D7D7D),
-                    ),
+                Text(
+                  'Enter the verification code sent to your email\n${widget.email}',
+                  style: GoogleFonts.roboto(
+                    fontSize: 16.sp,
+                    color: const Color(0xFF7D7D7D),
+                    height: 1.4,
                   ),
                 ),
                 SizedBox(height: 48.h),
-                
+
                 // OTP Input Field
                 GestureDetector(
                   onTap: () {
@@ -164,22 +177,15 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           height: 64.h,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(32.r),
+                            borderRadius: BorderRadius.circular(
+                              16.r,
+                            ), // Less rounded as requested
                             border: Border.all(
                               color: _otpFocusNode.hasFocus
-                                  ? const Color(0xFF469EFF) 
-                                  : Colors.white, // Only show blue ring when focused
-                              width: 1.5,
+                                  ? const Color(0xFFFF5B40)
+                                  : Colors.transparent,
+                              width: 1.0,
                             ),
-                            boxShadow: _otpController.text.isNotEmpty
-                                ? [
-                                    const BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 2),
-                                    )
-                                  ]
-                                : null,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -189,15 +195,15 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                 char = _otpController.text[index];
                               }
                               return Text(
-                                char.isEmpty ? '-' : char,
+                                char.isEmpty ? '—' : char,
                                 style: GoogleFonts.roboto(
                                   fontSize: 24.sp,
-                                  color: char.isEmpty 
-                                      ? const Color(0xFFC4C4C4) 
-                                      : const Color(0xFF5A5A5A),
-                                  fontWeight: char.isEmpty 
-                                      ? FontWeight.normal 
-                                      : FontWeight.w500,
+                                  color: char.isEmpty
+                                      ? const Color(0xFFC4C4C4)
+                                      : const Color(0xFFFF5B40),
+                                  fontWeight: char.isEmpty
+                                      ? FontWeight.normal
+                                      : FontWeight.w600,
                                 ),
                               );
                             }),
@@ -207,7 +213,58 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     ],
                   ),
                 ),
-                
+
+                SizedBox(height: 80.h),
+
+                // Continue Button (Matching SignInScreen)
+                Center(
+                  child: Container(
+                    width: 337.w,
+                    height: 49.h,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0xFFFF5B40), Color(0xFFFF4172)],
+                      ),
+                      borderRadius: BorderRadius.circular(9999.r),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.1),
+                        width: 0.7,
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // For now, same logic as before - navigate when 6 digits are entered
+                        if (_otpController.text.length == 6) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CoursesScreen(),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shadowColor: Colors.transparent,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9999.r),
+                        ),
+                      ),
+                      child: Text(
+                        'Continue',
+                        style: GoogleFonts.roboto(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 48.h),
                 // Footer Links
                 Row(
@@ -221,42 +278,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: _resendTimerSeconds == 0 
+                      onTap: _resendTimerSeconds == 0
                           ? () {
                               _startResendTimer();
-                              // Actual resend logic goes here
                             }
                           : null,
                       child: Text(
-                        _resendTimerSeconds > 0 ? 'Resend in ${_resendTimerSeconds}s' : 'Resend',
+                        _resendTimerSeconds > 0
+                            ? 'Resend in ${_resendTimerSeconds}s'
+                            : 'Resend',
                         style: GoogleFonts.roboto(
-                          color: _resendTimerSeconds > 0 
-                              ? const Color(0xFFC4C4C4) // Faded text when disabled
-                              : const Color(0xFF469EFF),
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Try another email? ',
-                      style: GoogleFonts.roboto(
-                        color: const Color(0xFF7D7D7D),
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Text(
-                        'Go back',
-                        style: GoogleFonts.roboto(
-                          color: const Color(0xFF469EFF),
+                          color: _resendTimerSeconds > 0
+                              ? const Color(0xFFC4C4C4)
+                              : const Color(0xFFFF5B40),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                         ),

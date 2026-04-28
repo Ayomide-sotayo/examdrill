@@ -55,24 +55,36 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 60.h),
-                // Mascot Image in a Circle
-                Center(
-                  child: Image.asset(
-                    'assets/images/signinmascot.png',
-                    width: 120.w,
-                    height: 120.w,
-                    fit: BoxFit.contain,
+                SizedBox(height: 100.h),
+                // Mail Icon in a Circle
+                Container(
+                  width: 50.w,
+                  height: 50.w,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/mail.png',
+                      width: 50.w,
+                      height: 50.w,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.mail_outline,
+                        size: 50.sp,
+                        color: Colors.black26,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 32.h),
                 // Title
                 Text(
-                  'Sign In',
+                  'Continue With Email',
                   style: GoogleFonts.roboto(
-                    fontSize: 24.sp,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -80,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(height: 8.h),
                 // Subtitle
                 Text(
-                  'Sign in with your email to continue.',
+                  'Sign in or Sign up with your email to continue.',
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     color: const Color(0xFF7D7D7D),
@@ -91,14 +103,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.r),
+                    borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(
-                      color: _errorText != null 
-                          ? Colors.red 
-                          : (_emailFocusNode.hasFocus 
-                              ? const Color(0xFF469EFF) 
+                      color: _errorText != null
+                          ? Colors.red
+                          : (_emailFocusNode.hasFocus
+                              ? const Color(0xFFFF5B40)
                               : Colors.transparent),
-                      width: 1.5, // slightly thicker for the focus ring
+                      width: 1.0,
                     ),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -117,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontSize: 16.sp,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 16.h),
+                      contentPadding: EdgeInsets.symmetric(vertical: 20.h),
                     ),
                   ),
                 ),
@@ -135,44 +147,62 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                   ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 80.h),
                 // Continue Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 56.h,
-                  child: ElevatedButton(
-                    onPressed: _isButtonEnabled 
-                      ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VerificationScreen(email: _emailController.text),
-                            ),
-                          );
-                        }
-                      : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isButtonEnabled 
-                          ? const Color(0xFF469EFF) 
-                          : const Color(0xFF469EFF).withOpacity(0.3), // Dull color
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: const Color(0xFF469EFF).withOpacity(0.3),
-                      disabledForegroundColor: Colors.white.withOpacity(0.7),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.r),
+                Center(
+                  child: Container(
+                    width: 337.w,
+                    height: 49.h,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: _isButtonEnabled
+                            ? [const Color(0xFFFF5B40), const Color(0xFFFF4172)]
+                            : [
+                                const Color(0xFFFF5B40).withOpacity(0.5),
+                                const Color(0xFFFF4172).withOpacity(0.5)
+                              ],
+                      ),
+                      borderRadius: BorderRadius.circular(9999.r),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.1),
+                        width: 0.7,
                       ),
                     ),
-                    child: Text(
-                      'Continue',
-                      style: GoogleFonts.roboto(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
+                    child: ElevatedButton(
+                      onPressed: _isButtonEnabled
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VerificationScreen(
+                                      email: _emailController.text),
+                                ),
+                              );
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shadowColor: Colors.transparent,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9999.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 0),
+                      ),
+                      child: Text(
+                        'Continue',
+                        style: GoogleFonts.roboto(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 40.h), // Extra space at bottom for scrolling
+                SizedBox(height: 40.h),
               ],
             ),
           ),

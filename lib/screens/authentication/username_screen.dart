@@ -1,47 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'username_screen.dart';
+import '../dashboard_screen.dart';
 
-class GuestCodeScreen extends StatefulWidget {
-  const GuestCodeScreen({super.key});
+class UsernameScreen extends StatefulWidget {
+  const UsernameScreen({super.key});
 
   @override
-  State<GuestCodeScreen> createState() => _GuestCodeScreenState();
+  State<UsernameScreen> createState() => _UsernameScreenState();
 }
 
-class _GuestCodeScreenState extends State<GuestCodeScreen> {
-  final TextEditingController _codeController = TextEditingController();
-  final FocusNode _codeFocusNode = FocusNode();
+class _UsernameScreenState extends State<UsernameScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _codeController.addListener(_onCodeChanged);
-    _codeFocusNode.addListener(() {
-      setState(() {});
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _codeFocusNode.requestFocus();
-    });
+    _nameFocusNode.requestFocus();
   }
 
   @override
   void dispose() {
-    _codeController.dispose();
-    _codeFocusNode.dispose();
+    _nameController.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
-  }
-
-  void _onCodeChanged() {
-    setState(() {});
-    if (_codeController.text.length == 6) {
-      // Navigate to Username Screen when 6 digits are entered
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const UsernameScreen()),
-      );
-    }
   }
 
   @override
@@ -82,7 +65,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                   ),
                 ),
                 SizedBox(height: 40.h),
-                // Code Icon in a Circle
+                // Smile Icon in a Circle
                 Container(
                   width: 50.w,
                   height: 50.w,
@@ -91,15 +74,12 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Image.asset(
-                      'assets/images/code.png',
-                      width: 50.w,
-                      height: 50.w,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.qr_code_2_rounded,
-                        size: 50.sp,
-                        color: Colors.black26,
+                    child: Opacity(
+                      opacity: 0.1,
+                      child: Icon(
+                        Icons.sentiment_satisfied_alt_rounded,
+                        size: 24.sp,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -107,7 +87,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                 SizedBox(height: 32.h),
                 // Title
                 Text(
-                  'Enter Guest Code',
+                  'What Do We Call You?',
                   style: GoogleFonts.roboto(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
@@ -117,7 +97,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                 SizedBox(height: 8.h),
                 // Subtitle
                 Text(
-                  'Only invited users can access the product.\nEnter your code to continue',
+                  'Welcome! Please enter your name so we can personalize your experience.',
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     color: const Color(0xFF7D7D7D),
@@ -126,68 +106,36 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                 ),
                 SizedBox(height: 48.h),
                 
-                // Code Input Field
-                GestureDetector(
-                  onTap: () {
-                    _codeFocusNode.requestFocus();
-                  },
-                  child: Stack(
-                    children: [
-                      // Hidden TextField for input
-                      SizedBox(
-                        height: 64.h,
-                        child: Opacity(
-                          opacity: 0,
-                          child: TextField(
-                            controller: _codeController,
-                            focusNode: _codeFocusNode,
-                            keyboardType: TextInputType.number,
-                            maxLength: 6,
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
+                // Name Input Field
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: _nameFocusNode.hasFocus
+                          ? const Color(0xFFFF5B40)
+                          : Colors.transparent,
+                      width: 1.0,
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: TextField(
+                    controller: _nameController,
+                    focusNode: _nameFocusNode,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Enter Name',
+                      hintStyle: GoogleFonts.roboto(
+                        color: const Color(0xFFC4C4C4),
+                        fontSize: 16.sp,
                       ),
-                      // Visual Representation
-                      IgnorePointer(
-                        child: Container(
-                          height: 64.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                            border: Border.all(
-                              color: _codeFocusNode.hasFocus
-                                  ? const Color(0xFFFF5B40) 
-                                  : Colors.transparent,
-                              width: 1.0,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: List.generate(6, (index) {
-                              String char = '';
-                              if (_codeController.text.length > index) {
-                                char = _codeController.text[index];
-                              }
-                              return Text(
-                                char.isEmpty ? '—' : char,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 24.sp,
-                                  color: char.isEmpty 
-                                      ? const Color(0xFFC4C4C4) 
-                                      : const Color(0xFFFF5B40),
-                                  fontWeight: char.isEmpty 
-                                      ? FontWeight.normal 
-                                      : FontWeight.w600,
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                    ],
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 20.h),
+                    ),
+                    onChanged: (value) => setState(() {}),
                   ),
                 ),
                 
@@ -202,7 +150,7 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: _codeController.text.length == 6
+                        colors: _nameController.text.isNotEmpty
                             ? [const Color(0xFFFF5B40), const Color(0xFFFF4172)]
                             : [
                                 const Color(0xFFFF5B40).withOpacity(0.5),
@@ -216,11 +164,14 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                       ),
                     ),
                     child: ElevatedButton(
-                      onPressed: _codeController.text.length == 6
+                      onPressed: _nameController.text.isNotEmpty
                           ? () {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(builder: (context) => const UsernameScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) => DashboardScreen(name: _nameController.text),
+                                ),
+                                (route) => false,
                               );
                             }
                           : null,

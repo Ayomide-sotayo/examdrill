@@ -1,4 +1,4 @@
-import 'package:examdril/screens/authentication/signIn_screen.dart';
+import 'package:examdril/screens/authentication/splash_screen.dart';
 import 'package:examdril/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const SignInScreen(),
+          home: const SplashScreen(),
         );
       },
     );

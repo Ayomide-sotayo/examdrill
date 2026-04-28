@@ -71,16 +71,16 @@ class BnsOptionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 450),
       curve: Curves.easeInOut,
-      width: 92.w,
-      height: 145.6.h,
+      width: 105.w,
+      height: 170.h,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(6.4.r),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 12.h),
+          SizedBox(height: 16.h),
 
           // ── Face ──────────────────────────────
           Center(
@@ -88,8 +88,8 @@ class BnsOptionCard extends StatelessWidget {
               duration: const Duration(milliseconds: 300),
               child: SizedBox(
                 key: ValueKey(state),
-                width: 60.w,
-                height: 36.h,
+                width: 70.w,
+                height: 40.h,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -98,19 +98,25 @@ class BnsOptionCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 4.w,
-                          height: 4.w,
-                          decoration: BoxDecoration(color: faceColor, shape: BoxShape.circle),
+                          width: 5.w,
+                          height: 5.w,
+                          decoration: BoxDecoration(
+                            color: faceColor,
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                        SizedBox(width: 14.w),
+                        SizedBox(width: 18.w),
                         Container(
-                          width: 4.w,
-                          height: 4.w,
-                          decoration: BoxDecoration(color: faceColor, shape: BoxShape.circle),
+                          width: 5.w,
+                          height: 5.w,
+                          decoration: BoxDecoration(
+                            color: faceColor,
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 6.h),
                     // Mouth
                     state == BnsCardState.wrong
                         ? Transform.rotate(
@@ -118,53 +124,51 @@ class BnsOptionCard extends StatelessWidget {
                             child: Image.asset(
                               'assets/images/mouth_curve.png',
                               color: faceColor,
-                              width: 32.w,
+                              width: 38.w,
                               fit: BoxFit.contain,
                             ),
                           )
-                        : state == BnsCardState.correct || state == BnsCardState.correction
-                            ? Image.asset(
-                                'assets/images/mouth_curve.png',
-                                color: faceColor,
-                                width: 32.w,
-                                fit: BoxFit.contain,
-                              )
-                            : Image.asset(
-                                'assets/images/mouth_straight.png',
-                                color: faceColor,
-                                width: 32.w,
-                                fit: BoxFit.contain,
-                              ),
+                        : state == BnsCardState.correct ||
+                              state == BnsCardState.correction
+                        ? Image.asset(
+                            'assets/images/mouth_curve.png',
+                            color: faceColor,
+                            width: 38.w,
+                            fit: BoxFit.contain,
+                          )
+                        : Image.asset(
+                            'assets/images/mouth_straight.png',
+                            color: faceColor,
+                            width: 38.w,
+                            fit: BoxFit.contain,
+                          ),
                   ],
                 ),
               ),
             ),
           ),
 
-          SizedBox(height: 10.h),
+          SizedBox(height: 7.h),
 
           // ── Option text — Expanded so it fills remaining space ────────
-          // FIX: Expanded here replaces the old Spacer at the bottom.
-          // Text can grow to fill the card height; it will never overflow
-          // because it's clipped by the parent's bounded height.
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 450),
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   color: textColor,
-                  fontSize: 9.6.sp,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w600,
-                  height: 1.0,
+                  height: 1.2,
                   letterSpacing: 0,
                 ),
                 child: Text(
                   text,
-                  // overflow ellipsis as a last resort safety net
+                  textAlign: TextAlign.start,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 5,
+                  maxLines: 4,
                 ),
               ),
             ),
@@ -175,7 +179,9 @@ class BnsOptionCard extends StatelessWidget {
           // ── Bottom bar ────────────────────────
           AnimatedContainer(
             duration: const Duration(milliseconds: 450),
-            margin: EdgeInsets.symmetric(horizontal: 10.w).copyWith(bottom: 8.h),
+            margin: EdgeInsets.symmetric(
+              horizontal: 10.w,
+            ).copyWith(bottom: 8.h),
             height: 2.5.h,
             decoration: BoxDecoration(
               color: barColor,

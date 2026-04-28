@@ -1,53 +1,65 @@
 import 'package:examdril/screens/best_next_step/bns_pregame_screen.dart';
-import 'package:examdril/screens/patientchart/patient_chart_info_screen.dart';
 import 'package:examdril/screens/practice_drill/pregame_screen.dart';
-import 'package:examdril/screens/examdrill/theme_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final String name;
+  const DashboardScreen({super.key, this.name = 'Divine'});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFFBFBFB),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTopBar(),
-              SizedBox(height: 24.h),
-              _buildPersonalizedGames(),
-              SizedBox(height: 16.h),
-              Divider(color: const Color(0x1A24292F), thickness: 1.h),
-              SizedBox(height: 10.h),
-              _buildRecommendedSection(),
-              SizedBox(height: 16.h),
-              Divider(color: const Color(0x1A24292F), thickness: 1.h),
-              SizedBox(height: 10.h),
-              _buildGamesSection(),
-              SizedBox(height: 16.h),
-              Divider(color: const Color(0x1A24292F), thickness: 1.h),
-              SizedBox(height: 10.h),
-              _buildPatientChartSection(),
-              SizedBox(height: 60.h),
+              SizedBox(height: 32.h),
+              Text(
+                'Training Games',
+                style: GoogleFonts.roboto(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF7D8B96),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              _buildGameCard(
+                title: 'Best Next Step',
+                subtitle: 'Improve your reading comprehension.',
+                bgImage: 'assets/images/bns_bg.png',
+                iconImage: 'assets/images/feet.png',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BnsPreGameScreen()),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              _buildGameCard(
+                title: 'Practice Drill',
+                subtitle: 'Improve your reading comprehension.',
+                bgImage: 'assets/images/pd_bg.png',
+                iconImage: 'assets/images/bulb2.png',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PreGameScreen()),
+                ),
+              ),
+              SizedBox(height: 40.h),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
@@ -55,505 +67,269 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // Left Group: Avatar + Course Dropdown
         Row(
           children: [
-            CircleAvatar(
-              radius: 32.r,
-              backgroundColor: const Color(0xFF68727D),
-              backgroundImage: const AssetImage('assets/images/avatar.png'),
+            // User Icon Avatar
+            Container(
+              width: 48.w,
+              height: 48.w,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEEEEEE),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: Icon(
+                Icons.person_outline_rounded,
+                color: const Color(0xFF7D8B96),
+                size: 28.sp,
+              ),
             ),
-            SizedBox(width: 10.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello',
-                  style: TextStyle(
-                    color: const Color.fromARGB(226, 82, 81, 81),
-                    fontSize: 12.sp,
+            SizedBox(width: 8.w),
+            // Course Dropdown Pill
+            PopupMenuButton<String>(
+              offset: const Offset(0, 60),
+              color: Colors.white,
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+              onSelected: (value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('$value is coming soon!', style: GoogleFonts.roboto()),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: const Color(0xFFFF5B40),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'OSCE',
+                  child: Text(
+                    'OSCE',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-                Text(
-                  'Divine',
-                  style: TextStyle(
-                    color: const Color(0xFF4270B0),
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+                PopupMenuItem(
+                  value: 'NAPLEX',
+                  child: Text(
+                    'NAPLEX',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+              child: Container(
+                width: 180.w,
+                height: 50.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(9999.r),
+                  border: Border.all(color: const Color(0xFFE0E0E0), width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'PEBC Evaluating Exam',
+                            style: GoogleFonts.roboto(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF7D8B96),
+                              height: 1.0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 3.h),
+                          Text(
+                            widget.name,
+                            style: GoogleFonts.roboto(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                              height: 1.0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: const Color(0xFF7D8B96),
+                      size: 16.sp,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        // Right: Streak Pill
+        Container(
+          width:70.w,
+          height: 50.h,
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.local_fire_department_outlined,
+                color: const Color.fromARGB(255, 105, 105, 105),
+                size: 18.sp,
+              ),
+              SizedBox(width: 4.w),
+              Text(
+                '0',
+                style: GoogleFonts.roboto(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF7D8B96),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGameCard({
+    required String title,
+    required String subtitle,
+    required String bgImage,
+    required String iconImage,
+    required VoidCallback onTap,
+  }) {
+    return Center(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 336.w,
+          height: 180.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            image: DecorationImage(
+              image: AssetImage(bgImage),
+              fit: BoxFit.cover,
+            ),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
+              width: 1.0,
+            ),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(16.r),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Colors.black.withOpacity(0.1),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Icon in dark square
+                Container(
+                  width: 44.w,
+                  height: 44.w,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF24292F).withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      iconImage,
+                      width: 24.w,
+                      height: 24.w,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, color: Colors.white),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.roboto(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.roboto(
+                        fontSize: 14.sp,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
+                ),
+                // Play Now Button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30.r),
+                    ),
+                    child: Text(
+                      'Play Now',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              height: 40.r,
-              width: 40.r,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFF6B35),
-                borderRadius: BorderRadius.circular(6.r),
-              ),
-              child: Text(
-                '10',
-                style: GoogleFonts.luckiestGuy(
-                  color: Colors.white,
-                  fontSize: 20.sp,
-                ),
-              ),
-            ),
-            SizedBox(height: 5.h),
-            Text(
-              'Daily streak',
-              style: TextStyle(color: const Color(0xFF68727D), fontSize: 12.sp),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPersonalizedGames() {
-    return Container(
-      width: double.infinity,
-      height: 90.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFF4270B0),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/pill_icon.png', height: 32.h),
-          SizedBox(width: 12.w),
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'Personalized games',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecommendedSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Recommended study plan',
-          style: TextStyle(
-            color: const Color(0xFF25292F),
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: 13.h),
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ThemeSelectionScreen(),
-                  ),
-                ),
-                child: Container(
-                  height: 170.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: const Color.fromARGB(225, 166, 184, 255),
-                      width: 1.w,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14.r),
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          'assets/images/rabbit.png',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                        Positioned(
-                          top: 10.h,
-                          left: 10.w,
-                          child: Text(
-                            'Exam Drill',
-                            style: TextStyle(
-                              color: const Color(0xFF4A6CF7),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.6.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PreGameScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 170.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1A1A1A),
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          'assets/images/lightbulb.png',
-                          height: 60.h,
-                        ),
-                      ),
-                    Positioned(
-                      bottom: 12.h,
-                      left: 37.w,
-                      child: Text(
-                        'Practice Drill',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17.6.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGamesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Games',
-              style: TextStyle(
-                color: const Color(0xFF25292F),
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              'view all',
-              style: TextStyle(color: Colors.blue[300], fontSize: 13.sp),
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 170.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF454A87),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        'assets/images/recall_dash.png',
-                        height: 80.h,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 12.h,
-                      left: 37.w,
-                      child: Text(
-                        'Recall Dash',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17.6.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Container(
-                height: 170.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1A0A2E),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/calculation.png",
-                      fit: BoxFit.cover,
-                    ),
-                    ShaderMask(
-                      blendMode: BlendMode.srcIn,
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Color(0xFFFF4EFC), Color(0xFF24015F)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ).createShader(bounds),
-                      child: Text(
-                        'Calculation\nGym',
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20.sp,
-                          height: 1.0,
-                          letterSpacing: 0.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPatientChartSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Clinical Tools',
-          style: TextStyle(
-            color: const Color(0xFF25292F),
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            // ── Patient Chart ──────────────────────────
-            Expanded(
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PatientChartInfoScreen(),
-                  ),
-                ),
-                child: Container(
-                  height: 130.h,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF0F9B8E), Color(0xFF0A635B)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF0F9B8E).withValues(alpha: 0.3),
-                        blurRadius: 10.r,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Positioned(
-                        right: -8.w,
-                        bottom: -10.h,
-                        child: Icon(
-                          Icons.medical_information,
-                          size: 70.sp,
-                          color: Colors.white.withValues(alpha: 0.15),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(14.r),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(6.r),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Icon(
-                                Icons.monitor_heart_outlined,
-                                color: Colors.white,
-                                size: 18.sp,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              'Patient\nChart',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            // ── Best Next Step ─────────────────────────
-            Expanded(
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const BnsPreGameScreen(),
-                  ),
-                ),
-                child: Container(
-                  height: 130.h,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4A7FA5), Color(0xFF2C5F7A)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF4A7FA5).withValues(alpha: 0.3),
-                        blurRadius: 10.r,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Positioned(
-                        right: -8.w,
-                        bottom: -10.h,
-                        child: Icon(
-                          Icons.directions_walk_rounded,
-                          size: 70.sp,
-                          color: Colors.white.withValues(alpha: 0.15),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(14.r),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(6.r),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Icon(
-                                Icons.swap_vert_circle_outlined,
-                                color: Colors.white,
-                                size: 18.sp,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              'Best Next\nStep',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: const Color(0xFFE5E7EB), width: 1.5.w),
-        ),
-      ),
-      child: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF4270B0),
-        unselectedItemColor: const Color(0xFF68727D),
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Mode'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_esports_outlined),
-            label: 'Game',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events_outlined),
-            label: 'Leagues',
-          ),
-        ],
       ),
     );
   }

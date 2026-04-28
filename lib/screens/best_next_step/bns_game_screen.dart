@@ -7,6 +7,7 @@ import 'package:examdril/screens/best_next_step/bns_instructions_screen.dart';
 import 'package:examdril/screens/best_next_step/bns_option_card.dart';
 import 'package:examdril/screens/best_next_step/bns_pregame_screen.dart';
 import 'package:examdril/screens/best_next_step/bns_result_screen.dart';
+import 'package:examdril/screens/best_next_step/bns_retry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
@@ -220,7 +221,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     if (_lives == 0) {
       await _animateCorrection();
       await Future.delayed(const Duration(milliseconds: 500));
-      _goToResults();
+      _goToRetry();
       return;
     }
 
@@ -289,6 +290,24 @@ class _BnsGameScreenState extends State<BnsGameScreen>
         ),
       ),
     );
+  }
+
+  void _goToRetry() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BnsRetryScreen(
+          results: _questionHistory,
+          theme: widget.theme,
+        ),
+      ),
+    );
+
+    if (result == 'retry') {
+      _restartGame();
+    } else if (result == 'quit') {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -375,45 +394,50 @@ class _BnsGameScreenState extends State<BnsGameScreen>
       animation: _timerAnim,
       builder: (context, child) {
         final progress = _timerAnim.value;
+        final isPlaying = _phase == _Phase.playing;
         final color = Color.lerp(
-          const Color(0xFF4DB89A),
+          const Color(0xFF4CAF50),
           const Color(0xFFE53935),
           progress,
         );
 
-        return Stack(
-          children: [
-            // Left bar
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: Container(
-                width: 6.w,
-                height: MediaQuery.sizeOf(context).height * 0.7 * progress,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(4.r),
+        return AnimatedOpacity(
+          duration: const Duration(milliseconds: 300),
+          opacity: isPlaying ? 1.0 : 0.0,
+          child: Stack(
+            children: [
+              // Left bar
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: Container(
+                  width: 6.w,
+                  height: MediaQuery.sizeOf(context).height * 0.69 * progress,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(4.r),
+                    ),
                   ),
                 ),
               ),
-            ),
-            // Right bar
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: 6.w,
-                height: MediaQuery.sizeOf(context).height * 0.7 * progress,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4.r),
+              // Right bar
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 6.w,
+                  height: MediaQuery.sizeOf(context).height * 0.69 * progress,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4.r),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -424,7 +448,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   // ─────────────────────────────────────────
   Widget _buildTopBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 0.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -432,20 +456,13 @@ class _BnsGameScreenState extends State<BnsGameScreen>
             children: [
               GestureDetector(
                 onTap: _togglePause,
-                child: Container(
-                  padding: EdgeInsets.all(4.w),
-                  decoration: BoxDecoration(
-                    color: widget.theme.textColor.withOpacity(0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.pause,
-                    color: widget.theme.textColor,
-                    size: 20.sp,
-                  ),
+                child: Icon(
+                  Icons.pause,
+                  color: widget.theme.textColor,
+                  size: 20.sp,
                 ),
               ),
-              SizedBox(width: 14.w),
+              SizedBox(width: 2.w),
               Text(
                 '$_score',
                 style: TextStyle(
@@ -515,12 +532,12 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   //  OPTIONS PANEL (STACK-BASED FOR FLYING)
   // ─────────────────────────────────────────
   Offset _getSlotPosition(int slotIndex) {
-    final double x0 = 20.5.w;
-    final double x1 = 133.w;
-    final double x2 = 245.5.w;
+    final double x0 = 12.w;
+    final double x1 = 126.w;
+    final double x2 = 241.w;
 
-    final double y0 = 30.h;
-    final double y1 = 240.h;
+    final double y0 = 50.h;
+    final double y1 = 270.h;
 
     switch (slotIndex) {
       case 0:
@@ -542,7 +559,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     return Container(
       key: _panelKey,
       width: 358.w,
-      height: 430.h,
+      height: 460.h,
       decoration: BoxDecoration(
         color: widget.theme.cardAreaColor,
         borderRadius: BorderRadius.circular(10.r),
@@ -581,8 +598,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
     return Positioned(
       left: pos.dx,
-      top: pos.dy + 155.h, // Positioned just below where the card sits
-      width: 92.w,
+      top: pos.dy + 160.h, // Positioned just below where the card sits
+      width: 105.w,
       child: Text(
         label,
         textAlign: TextAlign.center,
@@ -618,8 +635,19 @@ class _BnsGameScreenState extends State<BnsGameScreen>
       width: 92.w,
       height: 145.6.h,
       child: DragTarget<int>(
-        onWillAcceptWithDetails: (details) => details.data != currentSlot,
-        onAcceptWithDetails: (details) => _onSwap(details.data, currentSlot),
+        onWillAcceptWithDetails: (details) {
+          // details.data is the optionIndex of the card being dragged
+          final draggedOption = details.data;
+          final draggedSlot = _slotAssignment.indexOf(draggedOption);
+          if (draggedSlot != currentSlot && _phase == _Phase.playing && !_isPaused) {
+            // Immediately swap so the displaced card flies to the old slot
+            _onSwap(draggedSlot, currentSlot);
+          }
+          return true;
+        },
+        onAcceptWithDetails: (_) {
+          // Swap already happened on hover, nothing to do on drop
+        },
         builder: (ctx, candidates, rejected) {
           final isHovered = candidates.isNotEmpty;
           Widget content = AnimatedContainer(
@@ -637,9 +665,9 @@ class _BnsGameScreenState extends State<BnsGameScreen>
             ),
             child: _phase == _Phase.playing
                 ? Draggable<int>(
-                    data: currentSlot,
+                    data: optionIndex, // Pass the option identity, not the slot
                     onDragStarted: _dismissHint,
-                    feedback: cardWidget, // No scaling
+                    feedback: cardWidget,
                     childWhenDragging: Opacity(opacity: 0.2, child: cardWidget),
                     child: cardWidget,
                   )
@@ -704,7 +732,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
               ),
               SizedBox(width: 8.w),
-              Icon(Icons.double_arrow_rounded, size: 18.sp),
+              Image.asset('assets/images/arrow.png', width: 18.sp, height: 18.sp, color: Colors.white),
             ],
           ),
         ),
@@ -732,7 +760,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
             ),
             SizedBox(width: 8.w),
-            Icon(Icons.double_arrow_rounded, size: 18.sp),
+            Image.asset('assets/images/arrow.png', width: 18.sp, height: 18.sp, color: Colors.white),
           ],
         ),
       ),
