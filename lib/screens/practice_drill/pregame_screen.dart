@@ -12,6 +12,8 @@ class PreGameScreen extends StatefulWidget {
 }
 
 class _PreGameScreenState extends State<PreGameScreen> {
+  bool _isSoundOn = true;
+
   @override
   void initState() {
     super.initState();
@@ -78,10 +80,13 @@ class _PreGameScreenState extends State<PreGameScreen> {
           ),
           Row(
             children: [
-              Icon(
-                Icons.volume_up_outlined,
-                color: Colors.white70,
-                size: 22.sp,
+              GestureDetector(
+                onTap: () => setState(() => _isSoundOn = !_isSoundOn),
+                child: Icon(
+                  _isSoundOn ? Icons.volume_up_outlined : Icons.volume_off_outlined,
+                  color: Colors.white70,
+                  size: 22.sp,
+                ),
               ),
             ],
           ),
@@ -290,7 +295,7 @@ class _PreGameScreenState extends State<PreGameScreen> {
       child: ElevatedButton(
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const PracticeDrillScreen()),
+          MaterialPageRoute(builder: (_) => PracticeDrillScreen(isSoundEnabled: _isSoundOn)),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,

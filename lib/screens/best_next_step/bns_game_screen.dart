@@ -11,12 +11,15 @@ import 'package:examdril/screens/best_next_step/bns_retry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
+import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 
 enum _Phase { playing, evaluating, correcting, corrected }
 
 class BnsGameScreen extends StatefulWidget {
   final BnsTheme theme;
-  const BnsGameScreen({super.key, required this.theme});
+  final bool isSoundEnabled;
+  const BnsGameScreen({super.key, required this.theme, this.isSoundEnabled = true});
 
   @override
   State<BnsGameScreen> createState() => _BnsGameScreenState();
@@ -49,6 +52,10 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   late AnimationController _submitPulse;
   final GlobalKey _panelKey = GlobalKey();
 
+  // ── AUDIO ───────────────────────────────
+  late AudioPlayer _bgPlayer;
+  late AudioPlayer _correctPlayer;
+
   // ── TIMER ───────────────────────────────
   late AnimationController _timerController;
   late Animation<double> _timerAnim;
@@ -56,10 +63,26 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   @override
   void initState() {
     super.initState();
+    _bgPlayer = AudioPlayer();
+    _correctPlayer = AudioPlayer();
+    _initAudio();
     _initControllers();
     _initQuestion();
     _entryController.forward();
     _startIdleTimer();
+  }
+
+  Future<void> _initAudio() async {
+    try {
+      await _bgPlayer.setAsset('assets/audio/good_background_sound.mp3');
+      await _bgPlayer.setLoopMode(LoopMode.one);
+      await _correctPlayer.setAsset('assets/audio/correct_sound_2.mp3');
+      if (widget.isSoundEnabled) {
+        _bgPlayer.play();
+      }
+    } catch (e) {
+      debugPrint('Audio init error: $e');
+    }
   }
 
   void _initControllers() {
@@ -133,14 +156,20 @@ class _BnsGameScreenState extends State<BnsGameScreen>
         _timerController.stop();
         _idleTimer?.cancel();
         _hintController.stop();
+        _bgPlayer.pause();
       } else {
         _timerController.forward();
         _startIdleTimer();
+        if (widget.isSoundEnabled) _bgPlayer.play();
       }
     });
   }
 
   void _restartGame() {
+    if (widget.isSoundEnabled) {
+      _bgPlayer.seek(Duration.zero);
+      _bgPlayer.play();
+    }
     setState(() {
       _currentQuestion = 0;
       _score = 0;
@@ -162,6 +191,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   void _onSwap(int fromSlot, int toSlot) {
     if (fromSlot == toSlot || _phase != _Phase.playing || _isPaused) return;
     _dismissHint();
+    HapticFeedback.selectionClick();
     setState(() {
       final tmp = _slotAssignment[fromSlot];
       _slotAssignment[fromSlot] = _slotAssignment[toSlot];
@@ -186,6 +216,20 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
     final correct = List.generate(5, (i) => _slotAssignment[i] == i);
     final allCorrect = correct.every((c) => c);
+
+    if (allCorrect) {
+      HapticFeedback.lightImpact();
+      if (widget.isSoundEnabled) {
+        try {
+          _correctPlayer.seek(Duration.zero);
+          _correctPlayer.play();
+        } catch (e) {
+          debugPrint('Correct SFX error: $e');
+        }
+      }
+    } else {
+      HapticFeedback.heavyImpact();
+    }
 
     setState(() {
       if (allCorrect) {
@@ -312,6 +356,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
   @override
   void dispose() {
+    _bgPlayer.dispose();
+    _correctPlayer.dispose();
     _hintController.dispose();
     _entryController.dispose();
     _submitPulse.dispose();

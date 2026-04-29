@@ -3,6 +3,7 @@ import 'package:examdril/screens/best_next_step/bns_instructions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:math';
 
 // ─────────────────────────────────────────────
 //  THEME MODEL
@@ -51,14 +52,15 @@ class BnsPreGameScreen extends StatefulWidget {
 }
 
 class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
-  /// -1 = nothing selected yet → button is disabled
-  int _selectedTheme = -1;
+  late int _selectedTheme;
+  bool _isSoundOn = true;
 
   bool get _themeChosen => _selectedTheme != -1;
 
   @override
   void initState() {
     super.initState();
+    _selectedTheme = Random().nextInt(kBnsThemes.length);
     // Enable immersive mode when entering pre-game/game flow
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
@@ -145,10 +147,13 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
                 ),
               ),
               SizedBox(width: 16.w),
-              Icon(
-                Icons.volume_up_outlined,
-                color: const Color(0xFF2C3947),
-                size: 22.sp,
+              GestureDetector(
+                onTap: () => setState(() => _isSoundOn = !_isSoundOn),
+                child: Icon(
+                  _isSoundOn ? Icons.volume_up_outlined : Icons.volume_off_outlined,
+                  color: const Color(0xFF2C3947),
+                  size: 22.sp,
+                ),
               ),
             ],
           ),
@@ -250,7 +255,7 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
     return Center(
       child: Container(
         width: 342.w,
-        height: 206.h,
+        height: 215.h,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
         decoration: BoxDecoration(
           color: const Color(0xFF547A95),
@@ -472,6 +477,7 @@ class _BnsPreGameScreenState extends State<BnsPreGameScreen> {
                   MaterialPageRoute(
                     builder: (_) => BnsGameScreen(
                       theme: kBnsThemes[_selectedTheme],
+                      isSoundEnabled: _isSoundOn,
                     ),
                   ),
                 );

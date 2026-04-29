@@ -25,13 +25,13 @@ class BnsRetryScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 40.h),
+            SizedBox(height: 210.h),
             // Header
             Text(
               'Nice Try',
               style: GoogleFonts.roboto(
-                fontSize: 48.sp,
-                fontWeight: FontWeight.bold,
+                fontSize: 25.sp,
+                fontWeight: FontWeight.w500,
                 color: const Color(0xFF2C3947),
               ),
             ),
@@ -39,7 +39,7 @@ class BnsRetryScreen extends StatelessWidget {
             Text(
               'You lost all your lives',
               style: GoogleFonts.roboto(
-                fontSize: 22.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF2C3947),
               ),

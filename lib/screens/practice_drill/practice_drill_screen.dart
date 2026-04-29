@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:flutter/services.dart';
 
 // ─────────────────────────────────────────────
 //  CONSTANTS
@@ -135,23 +136,27 @@ class _PracticeDrillScreenState extends State<PracticeDrillScreen>
   }
 
   Future<void> _playCorrect() async {
-    if (!widget.isSoundEnabled) return;
-    try {
-      await _correctPlayer.seek(Duration.zero);
-      _correctPlayer.play();
-    } catch (e) {
-      debugPrint('Correct SFX error: $e');
+    if (widget.isSoundEnabled) {
+      try {
+        await _correctPlayer.seek(Duration.zero);
+        _correctPlayer.play();
+      } catch (e) {
+        debugPrint('Correct SFX error: $e');
+      }
     }
+    HapticFeedback.lightImpact();
   }
 
   Future<void> _playWrong() async {
-    if (!widget.isSoundEnabled) return;
-    try {
-      await _wrongPlayer.seek(Duration.zero);
-      _wrongPlayer.play();
-    } catch (e) {
-      debugPrint('Wrong SFX error: $e');
+    if (widget.isSoundEnabled) {
+      try {
+        await _wrongPlayer.seek(Duration.zero);
+        _wrongPlayer.play();
+      } catch (e) {
+        debugPrint('Wrong SFX error: $e');
+      }
     }
+    HapticFeedback.heavyImpact();
   }
 
   @override
