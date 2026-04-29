@@ -14,6 +14,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late AnimationController _controller;
   late Animation<double> _bgScaleAnimation;
   late Animation<double> _logoOpacityAnimation;
+  late Animation<Offset> _logoSlideAnimation;
   late Animation<double> _logoScaleAnimation;
 
   @override
@@ -35,10 +36,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       ),
     );
 
-    _logoScaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _logoSlideAnimation = Tween<Offset>(
+      begin: const Offset(2.0, 0.0),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+      ),
+    );
+
+    _logoScaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.2, 0.8, curve: Curves.easeOutBack),
       ),
     );
 
@@ -93,18 +104,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
               // Centered Logo with soft reveal
               Center(
-                child: Opacity(
-                  opacity: _logoOpacityAnimation.value,
-                  child: Transform.scale(
-                    scale: _logoScaleAnimation.value,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 80.w,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.school,
-                        size: 80.w,
-                        color: Colors.white,
+                child: SlideTransition(
+                  position: _logoSlideAnimation,
+                  child: Opacity(
+                    opacity: _logoOpacityAnimation.value,
+                    child: Transform.scale(
+                      scale: _logoScaleAnimation.value,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 80.w,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.school,
+                          size: 80.w,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
