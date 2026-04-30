@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
 import 'verification_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -172,14 +174,25 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VerificationScreen(
-                                      email: _emailController.text),
-                                ),
-                              );
+                          ? () async {
+                              final authService = Provider.of<AuthService>(context, listen: false);
+                              final success = await authService.requestOTP(_emailController.text);
+                              
+                              if (!mounted) return;
+                              
+                              if (success) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VerificationScreen(
+                                        email: _emailController.text),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Failed to request OTP. Please try again.')),
+                                );
+                              }
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
@@ -192,12 +205,26 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         padding: EdgeInsets.symmetric(vertical: 0),
                       ),
-                      child: Text(
-                        'Continue',
-                        style: GoogleFonts.roboto(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Consumer<AuthService>(
+                        builder: (context, auth, child) {
+                          if (auth.isLoading) {
+                            return SizedBox(
+                              height: 20.w,
+                              width: 20.w,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          }
+                          return Text(
+                            'Continue',
+                            style: GoogleFonts.roboto(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

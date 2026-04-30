@@ -6,7 +6,8 @@ import 'guest_code_screen.dart';
 import '../dashboard_screen.dart';
 
 class PaywallScreen extends StatelessWidget {
-  const PaywallScreen({super.key});
+  final String resourceId;
+  const PaywallScreen({super.key, required this.resourceId});
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +168,7 @@ class PaywallScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const GuestCodeScreen(),
+                              builder: (context) => GuestCodeScreen(resourceId: resourceId),
                             ),
                           );
                         },

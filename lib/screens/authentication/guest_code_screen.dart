@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'username_screen.dart';
 
 class GuestCodeScreen extends StatefulWidget {
-  const GuestCodeScreen({super.key});
+  final String resourceId;
+  const GuestCodeScreen({super.key, required this.resourceId});
 
   @override
   State<GuestCodeScreen> createState() => _GuestCodeScreenState();
@@ -34,12 +35,17 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
   }
 
   void _onCodeChanged() {
-    setState(() {});
+    setState(() {}); // Ensure the UI updates to show typed characters
     if (_codeController.text.length == 6) {
       // Navigate to Username Screen when 6 digits are entered
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const UsernameScreen()),
+        MaterialPageRoute(
+          builder: (context) => UsernameScreen(
+            resourceId: widget.resourceId,
+            inviteCode: _codeController.text,
+          ),
+        ),
       );
     }
   }
@@ -141,7 +147,8 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                           child: TextField(
                             controller: _codeController,
                             focusNode: _codeFocusNode,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.characters,
                             maxLength: 6,
                             decoration: const InputDecoration(
                               counterText: '',
@@ -220,7 +227,12 @@ class _GuestCodeScreenState extends State<GuestCodeScreen> {
                           ? () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const UsernameScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) => UsernameScreen(
+                                    resourceId: widget.resourceId,
+                                    inviteCode: _codeController.text,
+                                  ),
+                                ),
                               );
                             }
                           : null,

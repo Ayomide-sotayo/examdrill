@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
+import '../dashboard_screen.dart';
 import 'courses_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -55,14 +58,37 @@ class _VerificationScreenState extends State<VerificationScreen> {
     });
   }
 
-  void _onOtpChanged() {
-    setState(() {}); // Trigger rebuild to show the typed numbers
+  void _onOtpChanged() async {
+    setState(() {}); // Ensure the UI updates to show typed characters
     if (_otpController.text.length == 6) {
-      // Navigate to courses screen when 6 digits are entered
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CoursesScreen()),
-      );
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final success = await authService.verifyOTP(widget.email, _otpController.text);
+      
+      if (!mounted) return;
+      
+      if (success) {
+        final profile = authService.userProfile;
+        if (profile != null && profile['display_name'] != null && profile['display_name'].toString().isNotEmpty) {
+          // Existing user - Go to Dashboard
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DashboardScreen(name: profile['display_name']),
+            ),
+            (route) => false,
+          );
+        } else {
+          // New user - Go to Courses
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CoursesScreen()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid verification code.')),
+        );
+      }
     }
   }
 
@@ -162,7 +188,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           child: TextField(
                             controller: _otpController,
                             focusNode: _otpFocusNode,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.characters,
                             maxLength: 6,
                             decoration: const InputDecoration(
                               counterText: '',
@@ -234,17 +261,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // For now, same logic as before - navigate when 6 digits are entered
-                        if (_otpController.text.length == 6) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CoursesScreen(),
-                            ),
-                          );
-                        }
-                      },
+                      onPressed: () => _onOtpChanged(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         foregroundColor: Colors.white,
@@ -254,12 +271,26 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           borderRadius: BorderRadius.circular(9999.r),
                         ),
                       ),
-                      child: Text(
-                        'Continue',
-                        style: GoogleFonts.roboto(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Consumer<AuthService>(
+                        builder: (context, auth, child) {
+                          if (auth.isLoading) {
+                            return SizedBox(
+                              height: 20.w,
+                              width: 20.w,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          }
+                          return Text(
+                            'Continue',
+                            style: GoogleFonts.roboto(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

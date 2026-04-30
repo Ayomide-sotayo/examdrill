@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
 import 'paywall_screen.dart';
+import 'guest_code_screen.dart';
+import 'username_screen.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -12,6 +16,11 @@ class CoursesScreen extends StatefulWidget {
 
 class _CoursesScreenState extends State<CoursesScreen> {
   String? _selectedCourse;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +172,11 @@ class _CoursesScreenState extends State<CoursesScreen> {
                       ? () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const PaywallScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const PaywallScreen(
+                                resourceId: '091ebdd3-dad5-429b-af92-78ce3e91a782',
+                              ),
+                            ),
                           );
                         }
                       : null,

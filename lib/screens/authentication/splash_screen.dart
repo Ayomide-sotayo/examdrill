@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
+import '../dashboard_screen.dart';
 import 'signIn_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -65,18 +68,29 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   void _navigateToNext() {
     Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => const SignInScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 800),
-          ),
-        );
+      if (!mounted) return;
+      
+      final authService = Provider.of<AuthService>(context, listen: false);
+      
+      Widget nextScreen;
+      
+      if (authService.isAuthenticated && authService.userProfile != null) {
+        final name = authService.userProfile!['display_name'] ?? 'User';
+        nextScreen = DashboardScreen(name: name);
+      } else {
+        nextScreen = const SignInScreen();
       }
+
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+      );
     });
   }
 

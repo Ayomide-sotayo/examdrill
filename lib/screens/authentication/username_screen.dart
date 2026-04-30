@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../services/auth_service.dart';
 import '../dashboard_screen.dart';
 
 class UsernameScreen extends StatefulWidget {
-  const UsernameScreen({super.key});
+  final String resourceId;
+  final String inviteCode;
+  const UsernameScreen({
+    super.key,
+    required this.resourceId,
+    required this.inviteCode,
+  });
 
   @override
   State<UsernameScreen> createState() => _UsernameScreenState();
@@ -165,14 +173,29 @@ class _UsernameScreenState extends State<UsernameScreen> {
                     ),
                     child: ElevatedButton(
                       onPressed: _nameController.text.isNotEmpty
-                          ? () {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DashboardScreen(name: _nameController.text),
-                                ),
-                                (route) => false,
+                          ? () async {
+                              final authService = Provider.of<AuthService>(context, listen: false);
+                              final success = await authService.enroll(
+                                displayName: _nameController.text,
+                                accessCode: widget.inviteCode,
+                                resourceId: widget.resourceId,
                               );
+                              
+                              if (!mounted) return;
+                              
+                              if (success) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DashboardScreen(name: _nameController.text),
+                                  ),
+                                  (route) => false,
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Failed to enroll. Please check your invite code.')),
+                                );
+                              }
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
@@ -184,12 +207,26 @@ class _UsernameScreenState extends State<UsernameScreen> {
                           borderRadius: BorderRadius.circular(9999.r),
                         ),
                       ),
-                      child: Text(
-                        'Continue',
-                        style: GoogleFonts.roboto(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Consumer<AuthService>(
+                        builder: (context, auth, child) {
+                          if (auth.isLoading) {
+                            return SizedBox(
+                              height: 20.w,
+                              width: 20.w,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          }
+                          return Text(
+                            'Continue',
+                            style: GoogleFonts.roboto(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
