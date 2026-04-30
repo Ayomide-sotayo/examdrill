@@ -53,8 +53,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   final GlobalKey _panelKey = GlobalKey();
 
   // ── AUDIO ───────────────────────────────
-  late AudioPlayer _bgPlayer;
   late AudioPlayer _correctPlayer;
+  late AudioPlayer _wrongPlayer;
 
   // ── TIMER ───────────────────────────────
   late AnimationController _timerController;
@@ -63,8 +63,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   @override
   void initState() {
     super.initState();
-    _bgPlayer = AudioPlayer();
     _correctPlayer = AudioPlayer();
+    _wrongPlayer = AudioPlayer();
     _initAudio();
     _initControllers();
     _initQuestion();
@@ -74,12 +74,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
   Future<void> _initAudio() async {
     try {
-      await _bgPlayer.setAsset('assets/audio/good_background_sound.mp3');
-      await _bgPlayer.setLoopMode(LoopMode.one);
       await _correctPlayer.setAsset('assets/audio/correct_sound_2.mp3');
-      if (widget.isSoundEnabled) {
-        _bgPlayer.play();
-      }
+      await _wrongPlayer.setAsset('assets/audio/wrong.mp3');
     } catch (e) {
       debugPrint('Audio init error: $e');
     }
@@ -137,9 +133,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
   void _startIdleTimer() {
     _idleTimer?.cancel();
-    _idleTimer = Timer(const Duration(seconds: 5), () {
-      if (!_hasInteracted &&
-          mounted &&
+    _idleTimer = Timer(const Duration(seconds: 7), () {
+      if (mounted &&
           _phase == _Phase.playing &&
           !_isPaused) {
         setState(() => _showHandHint = true);
@@ -156,20 +151,14 @@ class _BnsGameScreenState extends State<BnsGameScreen>
         _timerController.stop();
         _idleTimer?.cancel();
         _hintController.stop();
-        _bgPlayer.pause();
       } else {
         _timerController.forward();
         _startIdleTimer();
-        if (widget.isSoundEnabled) _bgPlayer.play();
       }
     });
   }
 
   void _restartGame() {
-    if (widget.isSoundEnabled) {
-      _bgPlayer.seek(Duration.zero);
-      _bgPlayer.play();
-    }
     setState(() {
       _currentQuestion = 0;
       _score = 0;
@@ -200,14 +189,16 @@ class _BnsGameScreenState extends State<BnsGameScreen>
       if (!_hasInteracted) {
         _hasInteracted = true;
         _showSubmit = true;
-        _idleTimer?.cancel();
       }
+      _startIdleTimer();
     });
   }
 
   Future<void> _onSubmit() async {
     if (_phase != _Phase.playing) return;
     _timerController.stop();
+    _idleTimer?.cancel();
+    _dismissHint();
 
     setState(() {
       _phase = _Phase.evaluating;
@@ -229,6 +220,14 @@ class _BnsGameScreenState extends State<BnsGameScreen>
       }
     } else {
       HapticFeedback.heavyImpact();
+      if (widget.isSoundEnabled) {
+        try {
+          _wrongPlayer.seek(Duration.zero);
+          _wrongPlayer.play();
+        } catch (e) {
+          debugPrint('Wrong SFX error: $e');
+        }
+      }
     }
 
     setState(() {
@@ -356,8 +355,8 @@ class _BnsGameScreenState extends State<BnsGameScreen>
 
   @override
   void dispose() {
-    _bgPlayer.dispose();
     _correctPlayer.dispose();
+    _wrongPlayer.dispose();
     _hintController.dispose();
     _entryController.dispose();
     _submitPulse.dispose();

@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       useInheritedMediaQuery: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'ExamDril',
+          title: 'ExamDash',
           debugShowCheckedModeBanner: false,
           builder: (context, widget) {
             return MediaQuery(

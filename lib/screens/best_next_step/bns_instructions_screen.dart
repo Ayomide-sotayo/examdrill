@@ -175,7 +175,7 @@ class _BnsInstructionsScreenState extends State<BnsInstructionsScreen> with Tick
         ),
         SizedBox(height: 20.h),
         Text(
-          'Drag and drop the cards in the appropriate\n positions to play',
+          'To play, drag and drop the cards to\nthe appropriate positions ',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: widget.theme.textColor.withOpacity(0.7),
