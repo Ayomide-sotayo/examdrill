@@ -222,6 +222,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             style: GoogleFonts.roboto(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           );
                         },

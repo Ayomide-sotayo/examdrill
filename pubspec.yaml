@@ -125,6 +125,7 @@ flutter:
     - assets/audio/good_background_sound.mp3
     - assets/audio/wrong_sound.mp3
     - assets/audio/wrong.mp3
+    - assets/audio/swap_sound.mp3
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

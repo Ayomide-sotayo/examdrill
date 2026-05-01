@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
@@ -106,25 +107,35 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 SizedBox(height: 20.h),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 48.w,
-                    height: 37.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(9999.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 6.9,
-                          offset: const Offset(0, 0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(9999.r),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        width: 48.w,
+                        height: 37.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(9999.r),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.8),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.chevron_left_rounded,
-                        color: Colors.black,
-                        size: 24.sp,
+                        child: Center(
+                          child: Icon(
+                            Icons.chevron_left_rounded,
+                            color: Colors.black,
+                            size: 24.sp,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -249,10 +260,15 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     width: 337.w,
                     height: 49.h,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0xFFFF5B40), Color(0xFFFF4172)],
+                        colors: _otpController.text.length == 6
+                            ? [const Color(0xFFFF5B40), const Color(0xFFFF4172)]
+                            : [
+                                const Color(0xFFFF5B40).withOpacity(0.5),
+                                const Color(0xFFFF4172).withOpacity(0.5)
+                              ],
                       ),
                       borderRadius: BorderRadius.circular(9999.r),
                       border: Border.all(
@@ -261,7 +277,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                     child: ElevatedButton(
-                      onPressed: () => _onOtpChanged(),
+                      onPressed: _otpController.text.length == 6 ? () => _onOtpChanged() : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         foregroundColor: Colors.white,
@@ -288,6 +304,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             style: GoogleFonts.roboto(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           );
                         },

@@ -55,6 +55,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
   // ── AUDIO ───────────────────────────────
   late AudioPlayer _correctPlayer;
   late AudioPlayer _wrongPlayer;
+  late AudioPlayer _swapPlayer;
 
   // ── TIMER ───────────────────────────────
   late AnimationController _timerController;
@@ -65,6 +66,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     super.initState();
     _correctPlayer = AudioPlayer();
     _wrongPlayer = AudioPlayer();
+    _swapPlayer = AudioPlayer();
     _initAudio();
     _initControllers();
     _initQuestion();
@@ -76,6 +78,7 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     try {
       await _correctPlayer.setAsset('assets/audio/correct_sound_2.mp3');
       await _wrongPlayer.setAsset('assets/audio/wrong.mp3');
+      await _swapPlayer.setAsset('assets/audio/swap_sound.mp3');
     } catch (e) {
       debugPrint('Audio init error: $e');
     }
@@ -181,6 +184,10 @@ class _BnsGameScreenState extends State<BnsGameScreen>
     if (fromSlot == toSlot || _phase != _Phase.playing || _isPaused) return;
     _dismissHint();
     HapticFeedback.selectionClick();
+    if (widget.isSoundEnabled) {
+      _swapPlayer.seek(Duration.zero);
+      _swapPlayer.play();
+    }
     setState(() {
       final tmp = _slotAssignment[fromSlot];
       _slotAssignment[fromSlot] = _slotAssignment[toSlot];
